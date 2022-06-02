@@ -1,0 +1,11 @@
+[
+
+	{type:"player", x: 128, y: 256, data:{}},
+	{type:"red", x: 165, y: 256, data:{}},
+	{type:"orange", x: 448, y: 288, data:{}},
+	{type:"cyan", x: 512, y: 288, data:{}},
+	{type:"pink", x: 640, y: 352, data:{}},
+	{type:"orange", x: 704, y: 352, data:{}},
+	{type:"pink", x: 1027, y: 284, data:{}},
+
+]

@@ -1,0 +1,17 @@
+[
+	
+	{type:"player", x: 72, y: 500, data:{}},
+	{type:"red", x: 300, y: 192, data:{}},
+	{type:"cyan", x: 160, y: 192, data:{}},
+	{type:"pink", x: 256, y: 192, data:{}},
+	{type:"orange", x: 576, y: 192, data:{}},
+	{type:"cyan", x: 758, y: 192, data:{}},
+	{type:"pink", x: 960, y: 192, data:{}},
+	{type:"red", x: 1408, y: 64, data:{}},
+	{type:"orange", x: 1536, y: 64, data:{}},
+	{type:"cyan", x: 1737, y: 32, data:{}},
+	{type:"red", x: 1466, y: 352, data:{}},
+	{type:"orange", x: 1210, y: 352, data:{}},
+	{type:"pink", x: 1024, y: 352, data:{}},
+	
+]

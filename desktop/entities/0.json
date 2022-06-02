@@ -1,0 +1,10 @@
+[
+
+	{type:"player", x: 96, y: 360, data:{}},
+	{type:"destblock", x: 192, y: 166, data:{}},
+	{type:"orange", x: 171, y: 96, data:{}},
+	{type:"cyan", x: 570, y: 128, data:{}},
+	{type:"score", x: 154, y: 110, data:{}},
+	{type:"score", x: 186, y: 110, data:{}},
+
+]

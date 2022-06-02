@@ -1,0 +1,8 @@
+[
+
+	{type:"player", x: 35, y: 450, data:{}},
+	{type:"red", x: 844, y: 256, data:{}},
+	{type:"orange", x: 950, y: 256, data:{}},
+	{type:"cyan", x: 889, y: 256, data:{}},
+
+]
