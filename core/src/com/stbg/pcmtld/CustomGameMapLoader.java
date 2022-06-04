@@ -33,13 +33,13 @@ public class CustomGameMapLoader {
 		
 		Random random = new Random();
 		
-		int col = 3, row = 0, startRow = row;
+		int col = 3, row = 0, startRow = row, startCol = col;
 		int[][][] tempMap = new int[mapData.map.length][HEIGHT][WIDTH];
 		tempMap[0][0][0] = TileType.BLOCK.getId();
 		tempMap[1][1][0] = TileType.PLAYERSTILE.getId();
 		
 		boolean right = true;
-		while(row < HEIGHT - 11) {
+		while(row < HEIGHT - 12) {
 			if(col + 10 >= WIDTH) {
 				int end = row + random.nextInt(7) + 4;
 				tempMap[0][row][col] = TileType.BLOCK.getId();
@@ -64,7 +64,7 @@ public class CustomGameMapLoader {
 				}
 				
 				startRow = ++row;
-				col = WIDTH - col + 1;
+				startCol = col = WIDTH - col + 1;
 				right = !right;
 				tempMap = new int[mapData.map.length][HEIGHT][WIDTH];
 				
@@ -130,6 +130,11 @@ public class CustomGameMapLoader {
 			}
 			
 		}
+		
+		if(right)
+			mapData.map[0][startRow][startCol - 2] = TileType.FINISH.getId();
+		else
+			mapData.map[0][startRow][WIDTH - startCol + 1] = TileType.FINISH.getId();
 		
 		/*Array<TileGroup> tileGroups = new Array<TileGroup>();
 		tileGroups.add(new TileGroup(0, 0, 0));
