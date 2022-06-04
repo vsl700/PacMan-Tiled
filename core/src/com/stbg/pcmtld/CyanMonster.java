@@ -33,7 +33,7 @@ public class CyanMonster extends Entity {
 		
 		//pos = new Vector2(snapshot.getX(), snapshot.getY());
 		
-		SPEED = 80;
+		SPEED = 125;
 		
 		walkSheet = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-monster-cyan-right.png"));
 		

@@ -83,7 +83,7 @@ public class Player extends Entity {
 		movingLeft = false;
 		score = 0;
 		time = 101;
-		SPEED = 85;
+		SPEED = 125;
 		//health = 50;
 		
 		
