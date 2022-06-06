@@ -11,6 +11,8 @@ public abstract class GameMap {
 	ArrayList<Entity> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
+	private boolean camRight;
+	private boolean camUp;
 	public static boolean checkPLoad = false;
 	private boolean finish = false;
 	private boolean dead = false;
@@ -66,6 +68,9 @@ public abstract class GameMap {
 		
 		xCamOffset = 300;
 		yCamOffset = -100;
+		
+		camRight = true;
+		camUp = true;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,6 +90,9 @@ public abstract class GameMap {
 	}
 
 	public void update(float delta) {
+		if(delta > 1 / 10f)
+			return;
+		
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities.get(i) != null) {
 				entities.get(i).update(delta, -9.8f);
@@ -128,8 +136,31 @@ public abstract class GameMap {
 	}
 
 	public void render(OrthographicCamera camera, SpriteBatch batch) {
-		camera.position.x = entities.get(playerIndex).pos.x + xCamOffset;
-		camera.position.y = entities.get(playerIndex).pos.y + yCamOffset;
+		if(playerIndex >= 0) {
+			camera.position.x = entities.get(playerIndex).pos.x + xCamOffset;
+			camera.position.y = entities.get(playerIndex).pos.y + yCamOffset;
+		}
+		else {
+			if(camRight && camera.position.x >= (getWidth() - 10) * TileType.TILE_SIZE) {
+				camRight = false;
+			}
+			else if(!camRight && camera.position.x <= 12 * TileType.TILE_SIZE) {
+				camRight = true;
+			}
+			
+			if(camUp && camera.position.y >= (getHeight() - 12) * TileType.TILE_SIZE) {
+				camUp = false;
+			}
+			else if(!camUp && camera.position.y <= 5 * TileType.TILE_SIZE) {
+				camUp = true;
+			}
+			
+			
+			int speed = 96;
+			float delta = 1 / 60f;
+			float delta2 = 1 / 90f;
+			camera.translate((camRight ? speed : -speed) * delta, (camUp ? speed : -speed) * delta2);
+		}
 
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
@@ -276,7 +307,7 @@ public abstract class GameMap {
 				return i;
 		}
 
-		return 0;
+		return -1;
 	}
 
 	public boolean isFinish() {

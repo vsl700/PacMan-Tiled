@@ -40,7 +40,6 @@ public class MyGdxGame extends Game {
 	public void create() {
 		cam = new OrthographicCamera();		
 		customMapCam = new OrthographicCamera();
-		customMapCam.zoom = 0.5f;
 		
 		scn1 = new Screen1(this);
 		scnS = new ScreenSaver(this);
@@ -126,6 +125,9 @@ public class MyGdxGame extends Game {
 	public void resize(int width, int height) {
 		cam.setToOrtho(false, width, height);
 		customMapCam.setToOrtho(false, width, height);
+		if(width >= 1000 && height >= 640)
+			customMapCam.zoom = 0.75f;
+		else customMapCam.zoom = 1f;
 		
 		getScreen().resize(width, height);
 	}

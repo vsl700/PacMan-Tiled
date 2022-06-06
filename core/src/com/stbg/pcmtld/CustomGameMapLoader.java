@@ -36,7 +36,7 @@ public class CustomGameMapLoader {
 		int col = 3, row = 0, startRow = row, startCol = col;
 		int[][][] tempMap = new int[mapData.map.length][HEIGHT][WIDTH];
 		tempMap[0][0][0] = TileType.BLOCK.getId();
-		tempMap[1][1][0] = TileType.PLAYERSTILE.getId();
+		//tempMap[1][1][0] = TileType.PLAYERSTILE.getId();
 		
 		boolean right = true;
 		while(row < HEIGHT - 12) {
