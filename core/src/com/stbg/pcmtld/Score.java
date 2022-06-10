@@ -23,6 +23,10 @@ public class Score extends Entity {
 		//batch.setProjectionMatrix(camera.combined);
 		batch.draw(score, getX(), getY(), getWidth(), getHeight());
 	}
+	
+	public void onCollected(/* Entity entity */) {
+		Player.setScore(Player.getScore() + 10);
+	}
 
 	@Override
 	public EntitySnapshot getSaveSnapshot() {

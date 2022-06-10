@@ -263,7 +263,7 @@ public abstract class GameMap {
 					} else if (entity.getClass() == Score.class && entity.getY() < y1 - 1 + height1 && entity.getY() + 1 + entity.getHeight() > y1) {
 						if (!entity.isDead()) {
 							entity.setDead(true);
-							Player.setScore(Player.getScore() + 10);
+							((Score) entity).onCollected(/* entities.get(getPlayerIndex()) */);
 						}
 					} else if (entity.getClass() == Checkpoint.class) {
 						checkPoint();
