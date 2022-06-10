@@ -260,7 +260,7 @@ public abstract class GameMap {
 							// System.out.println(entity.isTouched());
 						}
 
-					} else if (entity.getClass() == Score.class && entity.getY() < y1 - 1 + height1 && entity.getY() + 1 + entity.getHeight() > y1) {
+					} else if (entity.getType().isCollectable() && entity.getY() < y1 - 1 + height1 && entity.getY() + 1 + entity.getHeight() > y1) {
 						if (!entity.isDead()) {
 							entity.setDead(true);
 							((Score) entity).onCollected(/* entities.get(getPlayerIndex()) */);

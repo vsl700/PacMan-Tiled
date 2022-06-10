@@ -13,7 +13,11 @@ public class Score extends Entity {
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map){
 		super.create(snapshot, type, map);
 		
-		score = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-score.png"));
+		score = getScoreTexture();
+	}
+	
+	protected Texture getScoreTexture() {
+		return new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-score.png"));
 	}
 	
 	@Override
