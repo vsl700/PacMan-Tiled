@@ -24,7 +24,9 @@ public enum TileType {
 	CHECKPOINT(18, false, "check"),
 	BIGSCORE(19, false, "bigscore"),
 	BANANASCORE(20, false, "banana"),
-	HEARTSCORE(21, false, "heart");
+	HEARTSCORE(21, false, "heart"),
+	STRAWBERRYSCORE(22, false, "berry"),
+	CHERRYSCORE(23, false, "cherry");
 	//SCORETILE(16, false, "score"),
 	
 	
