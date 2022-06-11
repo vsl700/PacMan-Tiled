@@ -1,5 +1,7 @@
 package com.stbg.pcmtld;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -7,9 +9,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.stbg.pcmtld.Effects.Effect;
 
 public class Player extends Entity {
 
+	LinkedList<Effect> effects;
 	 
 	boolean fall = false;
 	boolean movingRight;
@@ -86,6 +90,7 @@ public class Player extends Entity {
 		SPEED = 125;
 		//health = 50;
 		
+		effects = new LinkedList<Effects.Effect>();
 		
 		//if(right){
 		walkSheet = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-right.png"));
@@ -157,6 +162,11 @@ public class Player extends Entity {
 	}
 	
 	public void update(float deltaTime , float gravity){
+		for(Effect e : effects) {
+			if(!e.update(this, deltaTime))
+				effects.remove(e);
+		}
+		
 		if((Gdx.input.isKeyPressed(Keys.UP) || jump) && grounded && !isToLadder())
 			this.velocityY += JUMP_VELOCITY * getWeight();
 		else if ((Gdx.input.isKeyPressed(Keys.UP) || jump) && !grounded && this.velocityY > 0 && !isToLadder())
@@ -294,6 +304,12 @@ public class Player extends Entity {
 		//else if (Gdx.input.isKeyPressed(Keys.UP) && !grounded && this.velocityY > 0)
 			
 		
+	}
+	
+	public void applyEffect(Effect effect) {
+		effect.onStart(this);
+		
+		effects.add(effect);
 	}
 	
 	@Override

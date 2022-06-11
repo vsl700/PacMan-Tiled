@@ -127,9 +127,12 @@ public class EntityLoader {
 							EntitySnapshot snapshot = new EntitySnapshot("score", x * 32 + 11, y * 32 + 11);
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
-						}else 
-							if(map.getTileTypeByCoordinate(layers, x, y) == TileType.BIGSCORE){
-							EntitySnapshot snapshot = new EntitySnapshot("bigscore", x * 32 + 11, y * 32 + 11);
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.BIGSCORE){
+							EntitySnapshot snapshot = new EntitySnapshot("bigscore", x * 32 + 7, y * 32 + 8);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.BANANASCORE){
+							EntitySnapshot snapshot = new EntitySnapshot("banana", x * 32, y * 32);
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.DESTBLOCKTILE){

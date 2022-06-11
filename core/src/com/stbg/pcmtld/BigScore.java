@@ -13,6 +13,7 @@ public class BigScore extends Score {
 	@Override
 	public void onCollected() {
 		Player.setScore(Player.getScore() + 50);
+		//map.getPlayerInstance().applyEffect(Effects.speedEffect(10));
 	}
 	
 }

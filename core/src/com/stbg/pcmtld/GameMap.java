@@ -293,6 +293,10 @@ public abstract class GameMap {
 
 	public abstract boolean isReady();
 
+	public Player getPlayerInstance() {
+		return ((Player) entities.get(getPlayerIndex()));
+	}
+	
 	public int getPixelWidth() {
 		return this.getWidth() * TileType.TILE_SIZE;
 	}
