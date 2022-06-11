@@ -120,19 +120,7 @@ public abstract class Entity {
 			die();
 
 		// System.out.println(getX() + ", " + getY());
-		if (getClass() == Player.class) {
-			if (map.doesEntityCollideWithEntity(getX(), getY(), getWidth(), getHeight(), getStartTime())) {
-
-				if (getHealth() - 1 < 1)
-					die();
-				else {
-					setHealth(getHealth() - 1);
-					setStartTime(1.15f);
-				}
-
-			}
-
-		}
+		
 
 		moveLeft = false;
 		moveRight = false;

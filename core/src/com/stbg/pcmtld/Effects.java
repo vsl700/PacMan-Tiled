@@ -22,6 +22,30 @@ public final class Effects {
 		};
 	}
 	
+	public static Effect invisibilityEffect(int time) {
+		return new Effect(time) {
+			
+			@Override
+			public void onStart(Player player) {
+				player.invisible = true;
+			}
+
+			@Override
+			public boolean update(Player player, float delta) {
+				if(time <= 1.5f && time > 1)
+					player.setStartTime(time);
+				
+				return super.update(player, delta);
+			}
+
+			@Override
+			public void onEnd(Player player) {
+				player.invisible = false;
+			}
+			
+		};
+	}
+	
 	public static abstract class Effect {
 		protected float time;
 		

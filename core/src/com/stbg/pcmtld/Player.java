@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -185,6 +186,16 @@ public class Player extends Entity {
 		
 		super.update(deltaTime, gravity);
 		
+		if (map.doesEntityCollideWithEntity(getX(), getY(), getWidth(), getHeight(), getStartTime()) && !invisible) {
+			if (getHealth() - 1 < 1)
+				die();
+			else {
+				setHealth(getHealth() - 1);
+				setStartTime(1.15f);
+			}
+
+		}
+		
 		//movingRight = false;
 		//movingLeft = false;
 		
@@ -245,6 +256,9 @@ public class Player extends Entity {
 		
 		if(getStartTime() > 0){
 			setStartTime(getStartTime() - deltaTime);
+			
+			if(invisible)
+				stateTime+= deltaTime * 2; // Increase animation speed
 		}
 		//else spawnTime = 7;
 		//if(playerhealth <= 1)
@@ -274,6 +288,8 @@ public class Player extends Entity {
 		
 		//batch.setProjectionMatrix(camera.combined);
 		//if(right)
+		
+		
 		if(getStartTime() > 0){
 			//invisible = true;
 			if(right)
@@ -287,9 +303,16 @@ public class Player extends Entity {
 		}//else if(Gdx.input.isKeyPressed(Keys.RIGHT) || right2){
 			//right2 = true;
 		else{
+			Color c = batch.getColor();
+			if(invisible)
+				batch.setColor(c.r, c.g, c.b, 0.4f);
+			
 			if(right)
 				batch.draw(walkAnimation.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight());
-			else batch.draw(walkAnimation2.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight()); 
+			else batch.draw(walkAnimation2.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight());
+			
+
+			batch.setColor(c);
 		}
 		//}else if(Gdx.input.isKeyPressed(Keys.LEFT) || right2 == false){
 			//right2 = false;

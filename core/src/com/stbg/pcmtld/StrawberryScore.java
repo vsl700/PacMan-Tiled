@@ -12,7 +12,7 @@ public class StrawberryScore extends Score {
 	
 	@Override
 	public void onCollected() {
-		
+		map.getPlayerInstance().applyEffect(Effects.invisibilityEffect(10));
 	}
 	
 }
