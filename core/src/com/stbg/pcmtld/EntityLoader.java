@@ -135,6 +135,10 @@ public class EntityLoader {
 							EntitySnapshot snapshot = new EntitySnapshot("banana", x * 32, y * 32);
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.HEARTSCORE){
+							EntitySnapshot snapshot = new EntitySnapshot("heart", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.DESTBLOCKTILE){
 							EntitySnapshot snapshot = new EntitySnapshot("destblock", x * 32, y * 32);
 							//snapshots.add(snapshot);

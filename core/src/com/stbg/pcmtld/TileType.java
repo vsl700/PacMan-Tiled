@@ -23,7 +23,8 @@ public enum TileType {
 	LADDER(17, false, "ladder"),
 	CHECKPOINT(18, false, "check"),
 	BIGSCORE(19, false, "bigscore"),
-	BANANASCORE(20, false, "banana");
+	BANANASCORE(20, false, "banana"),
+	HEARTSCORE(21, false, "heart");
 	//SCORETILE(16, false, "score"),
 	
 	

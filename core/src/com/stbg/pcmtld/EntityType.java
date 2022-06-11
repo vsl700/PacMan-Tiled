@@ -18,7 +18,8 @@ public enum EntityType {
 	CHECKPOINT("check", Checkpoint.class, 32, 32, 0, 1, false),
 	SCORE("score", Score.class, 9, 8, 0, 1, true),
 	BIGSCORE("bigscore", BigScore.class, 18, 16, 0, 1, true),
-	BANANASCORE("banana", BananaScore.class, 32, 32, 0, 1, true);
+	BANANASCORE("banana", BananaScore.class, 32, 32, 0, 1, true),
+	HEARTSCORE("heart", HeartScore.class, 32, 32, 0, 1, true);
 	
 	private String id;
 	private Class loaderClass;
