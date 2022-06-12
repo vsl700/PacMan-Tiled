@@ -1,15 +1,20 @@
 package com.stbg.pcmtld;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.stbg.pcmtld.Effects.Effect;
 
 public class Player extends Entity {
 
+	LinkedList<Effect> effects;
 	 
 	boolean fall = false;
 	boolean movingRight;
@@ -84,8 +89,11 @@ public class Player extends Entity {
 		score = 0;
 		time = 101;
 		SPEED = 125;
+		
+		startTime = 1.15f;
 		//health = 50;
 		
+		effects = new LinkedList<Effects.Effect>();
 		
 		//if(right){
 		walkSheet = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-right.png"));
@@ -157,6 +165,12 @@ public class Player extends Entity {
 	}
 	
 	public void update(float deltaTime , float gravity){
+		for(int i = 0; i < effects.size(); i++) {
+			Effect e = effects.get(i);
+			if(!e.update(this, deltaTime))
+				effects.remove(e);
+		}
+		
 		if((Gdx.input.isKeyPressed(Keys.UP) || jump) && grounded && !isToLadder())
 			this.velocityY += JUMP_VELOCITY * getWeight();
 		else if ((Gdx.input.isKeyPressed(Keys.UP) || jump) && !grounded && this.velocityY > 0 && !isToLadder())
@@ -174,6 +188,16 @@ public class Player extends Entity {
 		else if(Gdx.input.isKeyPressed(Keys.RIGHT)) moveRight = true;
 		
 		super.update(deltaTime, gravity);
+		
+		if (map.doesEntityCollideWithEntity(getX(), getY(), getWidth(), getHeight(), getStartTime()) && !invisible) {
+			if (getHealth() - 1 < 1)
+				die();
+			else {
+				setHealth(getHealth() - 1);
+				setStartTime(1.15f);
+			}
+
+		}
 		
 		//movingRight = false;
 		//movingLeft = false;
@@ -235,6 +259,9 @@ public class Player extends Entity {
 		
 		if(getStartTime() > 0){
 			setStartTime(getStartTime() - deltaTime);
+			
+			if(invisible)
+				stateTime+= deltaTime * 2; // Increase animation speed
 		}
 		//else spawnTime = 7;
 		//if(playerhealth <= 1)
@@ -264,6 +291,8 @@ public class Player extends Entity {
 		
 		//batch.setProjectionMatrix(camera.combined);
 		//if(right)
+		
+		
 		if(getStartTime() > 0){
 			//invisible = true;
 			if(right)
@@ -277,9 +306,16 @@ public class Player extends Entity {
 		}//else if(Gdx.input.isKeyPressed(Keys.RIGHT) || right2){
 			//right2 = true;
 		else{
+			Color c = batch.getColor();
+			if(invisible)
+				batch.setColor(c.r, c.g, c.b, 0.4f);
+			
 			if(right)
 				batch.draw(walkAnimation.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight());
-			else batch.draw(walkAnimation2.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight()); 
+			else batch.draw(walkAnimation2.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight());
+			
+
+			batch.setColor(c);
 		}
 		//}else if(Gdx.input.isKeyPressed(Keys.LEFT) || right2 == false){
 			//right2 = false;
@@ -294,6 +330,22 @@ public class Player extends Entity {
 		//else if (Gdx.input.isKeyPressed(Keys.UP) && !grounded && this.velocityY > 0)
 			
 		
+	}
+	
+	public void shoot() {
+		if(startTime > 0)
+			return;
+		
+		if(right)
+			map.shootBullet(getX() + getWidth() - 7, getY() + getHeight() / 2 - 5, 1, 0, this);
+		else
+			map.shootBullet(getX(), getY() + getHeight() / 2 - 5, -1, 0, this);
+	}
+	
+	public void applyEffect(Effect effect) {
+		effect.onStart(this);
+		
+		effects.add(effect);
 	}
 	
 	@Override

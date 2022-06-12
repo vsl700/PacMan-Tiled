@@ -51,7 +51,7 @@ public abstract class Entity {
 		dead = false;
 		toLadder = false;
 
-		startTime = 1.15f;
+		
 
 	}
 
@@ -116,23 +116,16 @@ public abstract class Entity {
 			}
 		}
 		
+		if (!type.isCollectable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
+			setHealth(getHealth() - 1);
+			//setStartTime(1.15f);
+		}
+		
 		if(getHealth() < 1)
 			die();
 
 		// System.out.println(getX() + ", " + getY());
-		if (getClass() == Player.class) {
-			if (map.doesEntityCollideWithEntity(getX(), getY(), getWidth(), getHeight(), getStartTime())) {
-
-				if (getHealth() - 1 < 1)
-					die();
-				else {
-					setHealth(getHealth() - 1);
-					setStartTime(1.15f);
-				}
-
-			}
-
-		}
+		
 
 		moveLeft = false;
 		moveRight = false;
