@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DestroyableBlock extends Entity {
 	
-	public Texture walkSheet;
+	private Texture walkSheet;
 
     private static final int    FRAME_COLS = 2;     
     private static final int    FRAME_ROWS = 1;
@@ -18,7 +18,7 @@ public class DestroyableBlock extends Entity {
 
     
     
-    public Texture walkSheet2;   
+    private Texture walkSheet2;   
 
     static Animation           dieAnimation;      
     static TextureRegion[]         walkFrames2;     

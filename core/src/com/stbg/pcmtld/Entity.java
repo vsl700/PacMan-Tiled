@@ -144,7 +144,7 @@ public abstract class Entity {
 
 	protected void moveX(float amount) {
 		float newX = pos.x + amount;
-		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight(), this) && (getClass() == Player.class || map.doesRectCollideWithTile(newX, pos.y - 1, getWidth(), getHeight(), TileType.BLOCK) && map.doesRectCollideWithTile(newX + getWidth(), pos.y - 1, getWidth(), getHeight(), TileType.BLOCK)))
+		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight(), this) && (getClass() == Player.class || map.doesRectCollideWithAnyTile(newX, pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE) && map.doesRectCollideWithAnyTile(newX + getWidth(), pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE)))
 			pos.x = newX;
 		else {
 			if (getClass() != Player.class)
