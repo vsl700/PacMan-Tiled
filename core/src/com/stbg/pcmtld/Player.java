@@ -89,6 +89,8 @@ public class Player extends Entity {
 		score = 0;
 		time = 101;
 		SPEED = 125;
+		
+		startTime = 1.15f;
 		//health = 50;
 		
 		effects = new LinkedList<Effects.Effect>();
@@ -163,7 +165,8 @@ public class Player extends Entity {
 	}
 	
 	public void update(float deltaTime , float gravity){
-		for(Effect e : effects) {
+		for(int i = 0; i < effects.size(); i++) {
+			Effect e = effects.get(i);
 			if(!e.update(this, deltaTime))
 				effects.remove(e);
 		}
@@ -327,6 +330,16 @@ public class Player extends Entity {
 		//else if (Gdx.input.isKeyPressed(Keys.UP) && !grounded && this.velocityY > 0)
 			
 		
+	}
+	
+	public void shoot() {
+		if(startTime > 0)
+			return;
+		
+		if(right)
+			map.shootBullet(getX() + getWidth() - 7, getY() + getHeight() / 2 - 5, 1, 0, this);
+		else
+			map.shootBullet(getX(), getY() + getHeight() / 2 - 5, -1, 0, this);
 	}
 	
 	public void applyEffect(Effect effect) {

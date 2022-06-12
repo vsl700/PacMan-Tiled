@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class GameMap {
 
 	protected ArrayList<Entity> entities;
+	protected ArrayList<Bullet> bullets;
 	ArrayList<Entity> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
@@ -55,6 +56,7 @@ public abstract class GameMap {
 
 	public GameMap() {
 		entities = new ArrayList<Entity>(100);
+		bullets = new ArrayList<Bullet>(100);
 		playerHealth = (int) EntityType.PLAYER.getHealth();
 		playerToLadder = false;
 		// if(!SettingReader.noLevels)
@@ -121,6 +123,7 @@ public abstract class GameMap {
 				}
 
 				if (entities.get(i).isDead() && entities.get(i).getClass() != Player.class) {
+					entities.get(i).dispose();
 					entities.remove(i);
 					// System.out.println("An entity just died.");
 				} else if (entities.get(i).isDead() && entities.get(i).getClass() == Player.class)
@@ -128,6 +131,15 @@ public abstract class GameMap {
 
 			}
 
+		}
+		
+		for (int i = 0; i < bullets.size(); i++) {
+			Bullet bullet = bullets.get(i);
+			bullet.update(delta);
+			
+			if(doesRectCollideWithTile(bullet.getX(), bullet.getY(), bullet.getWidth(), bullet.getHeight(), TileType.BLOCK) || doesRectCollideWithTile(bullet.getX(), bullet.getY(), bullet.getWidth(), bullet.getHeight(), TileType.DESTBLOCKTILE) ||
+					doesRectCollideWithTile(bullet.getX(), bullet.getY(), bullet.getWidth(), bullet.getHeight(), TileType.FINISH))
+				removeBullet(bullet);
 		}
 
 		// if(entities.indexOf(Player.class) == -1 && ready)
@@ -173,6 +185,19 @@ public abstract class GameMap {
 			// camera.position.x = entity.pos.x;
 			// camera.position.y = entity.pos.y;
 			// }
+		}
+		
+		float delay = 250;
+		for (int i = 0; i < bullets.size(); i++) {
+			Bullet bullet = bullets.get(i);
+			if(bullet.getX() + delay > camera.position.x + camera.viewportWidth / 2 + xCamOffset || bullet.getX() + bullet.getWidth() - delay < camera.position.x - camera.viewportWidth / 2 - xCamOffset) {
+				removeBullet(bullet);
+				i--;
+				
+				continue;
+			}
+			
+			bullet.render(batch, camera);
 		}
 
 		batch.end();
@@ -284,6 +309,21 @@ public abstract class GameMap {
 
 		return false;
 	}
+	
+	public boolean doesEntityCollideWithBullet(Entity entity) {
+		for(Bullet bullet : bullets) {
+			if(bullet.getShooterEntity().equals(entity))
+				continue;
+			
+			if (entity.getX() < bullet.getX() + bullet.getWidth() && entity.getX() + entity.getWidth() > bullet.getX() && entity.getY() < bullet.getY() + bullet.getHeight() && entity.getY() + entity.getHeight() > bullet.getY() && entity.startTime <= 0) {
+				removeBullet(bullet);
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	public abstract int getWidth();
 
@@ -293,6 +333,15 @@ public abstract class GameMap {
 
 	public abstract boolean isReady();
 
+	public void shootBullet(float spawnX, float spawnY, float dirX, float dirY, Entity shooterEntity) {
+		bullets.add(new Bullet(spawnX, spawnY, dirX, dirY, shooterEntity));
+	}
+	
+	private void removeBullet(Bullet bullet) {
+		bullet.dispose();
+		bullets.remove(bullet);
+	}
+	
 	public Player getPlayerInstance() {
 		return ((Player) entities.get(getPlayerIndex()));
 	}

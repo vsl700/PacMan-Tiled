@@ -51,7 +51,7 @@ public abstract class Entity {
 		dead = false;
 		toLadder = false;
 
-		startTime = 1.15f;
+		
 
 	}
 
@@ -114,6 +114,11 @@ public abstract class Entity {
 				else
 					pos.y++;
 			}
+		}
+		
+		if (!type.isCollectable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
+			setHealth(getHealth() - 1);
+			//setStartTime(1.15f);
 		}
 		
 		if(getHealth() < 1)

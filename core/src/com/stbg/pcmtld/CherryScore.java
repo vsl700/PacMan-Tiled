@@ -12,7 +12,7 @@ public class CherryScore extends Score {
 	
 	@Override
 	public void onCollected() {
-		
+		map.getPlayerInstance().applyEffect(Effects.shootingEffect(10));
 	}
 	
 }

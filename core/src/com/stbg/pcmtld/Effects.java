@@ -46,6 +46,30 @@ public final class Effects {
 		};
 	}
 	
+	public static Effect shootingEffect(int time) {
+		return new Effect(time) {
+			float timeInterval;
+			
+			@Override
+			public void onStart(Player player) {}
+
+			@Override
+			public boolean update(Player player, float delta) {
+				if(timeInterval <= 0) {
+					player.shoot();
+					timeInterval = 0.2f;
+				}else
+					timeInterval-= delta;
+				
+				return super.update(player, delta);
+			}
+
+			@Override
+			public void onEnd(Player player) {}
+			
+		};
+	}
+	
 	public static abstract class Effect {
 		protected float time;
 		

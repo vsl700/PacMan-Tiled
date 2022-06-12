@@ -10,10 +10,10 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public enum EntityType {
 
 	PLAYER("player", Player.class, 32, 32, 40, 3, false),
-	ORANGEENEMY("orange", OrangeEnemy.class, 32, 32, 40, 50, false),
-	CYANENEMY("cyan", CyanMonster.class, 32, 32, 40, 50, false),
-	PINKENENMY("pink", PinkMonster.class, 32, 32, 40, 50, false),
-	REDENEMY("red", RedEnemy.class, 32, 32, 40, 20, false),
+	ORANGEENEMY("orange", OrangeEnemy.class, 32, 32, 40, 4, false),
+	CYANENEMY("cyan", CyanMonster.class, 32, 32, 40, 4, false),
+	PINKENENMY("pink", PinkMonster.class, 32, 32, 40, 4, false),
+	REDENEMY("red", RedEnemy.class, 32, 32, 40, 2, false),
 	DESTROYABLEBLOCK("destblock", DestroyableBlock.class, 32, 32, 0, 1, false),
 	CHECKPOINT("check", Checkpoint.class, 32, 32, 0, 1, false),
 	SCORE("score", Score.class, 9, 8, 0, 1, true),
