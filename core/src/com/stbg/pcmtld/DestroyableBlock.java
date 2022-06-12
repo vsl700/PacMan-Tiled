@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DestroyableBlock extends Entity {
 	
-	public static Texture walkSheet;
+	public Texture walkSheet;
 
     private static final int    FRAME_COLS = 2;     
     private static final int    FRAME_ROWS = 1;
@@ -18,7 +18,7 @@ public class DestroyableBlock extends Entity {
 
     
     
-    public static Texture walkSheet2;   
+    public Texture walkSheet2;   
 
     static Animation           dieAnimation;      
     static TextureRegion[]         walkFrames2;     
@@ -81,8 +81,8 @@ public class DestroyableBlock extends Entity {
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
 		
 		//batch.setProjectionMatrix(camera.combined);
-		if(isTouched()) batch.draw(dieAnimation.getKeyFrame(stateTime, true), pos.x, pos.y, getWidth(), getHeight());
-		else batch.draw(walkSheet, pos.x, pos.y, getWidth(), getHeight());
+		if(isTouched()) batch.draw(dieAnimation.getKeyFrame(stateTime, true), pos.x, pos.y);
+		else batch.draw(walkSheet, pos.x, pos.y);
 		
 	}
 
