@@ -73,8 +73,6 @@ public abstract class Entity {
 			grounded = false;
 		}
 
-		canBeLaddered = (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER));
-
 		if (moveLeft) {
 			if (isToLadder() && !(map.doesRectCollideWithTile(getX() + getWidth() - 2, getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() - 2, getY(), getWidth(), getHeight(), TileType.LADDER))) 
 				// movingLeft = true;
@@ -97,9 +95,9 @@ public abstract class Entity {
 		// getHeight(), this))
 		// }
 
-		if (canBeLaddered && ladder)
+		if (canBeLaddered() && ladder)
 			setToLadder(!isToLadder());
-		else if(!canBeLaddered) setToLadder(false);
+		else if(!canBeLaddered()) setToLadder(false);
 
 		if (ladder && !isToLadder()) {
 			/*
@@ -242,7 +240,7 @@ public abstract class Entity {
 	}
 
 	public boolean canBeLaddered() {
-		return canBeLaddered;
+		return (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER));
 	}
 
 	public boolean isRight() {

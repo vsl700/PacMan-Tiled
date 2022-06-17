@@ -237,8 +237,13 @@ public abstract class GameMap {
 
 	public boolean doesRectCollideWithMap(float x, float y, int width, int height, Entity entity) {
 		for (Entity entity2 : entities) {
-			if (entity2.getClass() == DestroyableBlock.class && x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX() && y + (entity.getClass() == Player.class ? 3 : 0)  < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead())
+			if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX() && y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
+				if (entity.getType().equals(EntityType.PLAYER) && entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
+					entity2.setTouched(true);
+					//System.out.println(entity.isTouched());
+				}
 				return true;
+			}
 		}
 
 		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil(y + height) / TileType.TILE_SIZE; row++) {
@@ -287,7 +292,7 @@ public abstract class GameMap {
 		for (Entity entity : entities) {
 			// Return true if you want to hurt the player for some reason!
 			if (entity != null && entity.getClass() != Player.class) {
-				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 && startTime <= 0) {
+				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 - (entity.getClass() == DestroyableBlock.class ? 3 : 0) && startTime <= 0) {
 					if (entity.getClass() == DestroyableBlock.class && entity.getY() < y1) {
 						if (!entity.isDead()) {
 							entity.setTouched(true);
