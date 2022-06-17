@@ -95,17 +95,18 @@ public abstract class Entity {
 		// getHeight(), this))
 		// }
 
-		if (canBeLaddered() && ladder)
+		if (canBeLaddered() && ladder) {
 			setToLadder(!isToLadder());
-		else if(!canBeLaddered()) setToLadder(false);
-
-		if (ladder && !isToLadder()) {
-			/*
-			 * if(map.doesRectCollideWithMap(getX(), getY(), getWidth(),
-			 * getHeight(), this)) { pos.x = Math.round(getX()); pos.y =
-			 * Math.round(getY()); }
-			 */
-
+			
+			while (map.doesRectCollideWithMap(getX(), getY(), getWidth(), getHeight(), this)) {
+				if (!map.doesRectCollideWithMap(getX(), getY() - 32, getWidth(), getHeight(), this))
+					pos.y--;
+				else
+					pos.y++;
+			}
+		}else if(!canBeLaddered() && isToLadder()) {
+			setToLadder(false);
+			
 			while (map.doesRectCollideWithMap(getX(), getY(), getWidth(), getHeight(), this)) {
 				if (!map.doesRectCollideWithMap(getX(), getY() - 32, getWidth(), getHeight(), this))
 					pos.y--;
