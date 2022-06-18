@@ -7,24 +7,26 @@ import com.badlogic.gdx.files.FileHandle;
 public class SettingReader {
 	
 	//File file = new File("pcm.txt");
+	public static LevelGroups stage;
 	public int setting = 1;
 	public static boolean endless = false;
 	public static boolean noLevels = false;
 	public static int score = 0;
 	String text = "";
 	Preferences prefs;
-	int a = -1;
+	int a;
 	
 	public SettingReader(){
 		prefs = Gdx.app.getPreferences("pacman");
 		
-		setting = prefs.getInteger("setting");
+		getStage();
+		getLevel(stage);
+		getScore(stage);
 		endless = prefs.getBoolean("endless");
-		score = prefs.getInteger("scr");
 		
-		FileHandle file = Gdx.files.local("levels/" + setting + ".tmx");
+		FileHandle file = Gdx.files.local("levels/" + stage.getDir() + "/" + setting + ".tmx");
 		//FileHandle file4 = Gdx.files.local("entities/" + setting + ".json");
-		FileHandle file2 = Gdx.files.local("levels/" + 1 + ".tmx");
+		FileHandle file2 = Gdx.files.local("levels/" + stage.getDir() + "/" + 1 + ".tmx");
 		//FileHandle file3 = Gdx.files.local("entities/" + 1 + ".json");
 		
 		if(!file2.exists()){
@@ -37,28 +39,47 @@ public class SettingReader {
 	
 	public void writer(String func, int write, int score){
 		if(write <= Screen2.levels){
-		prefs.putInteger("setting", write);
+		prefs.putInteger(func, write);
 		prefs.putBoolean("endless", false);
-		prefs.putInteger("scr", score);
+		prefs.putInteger(func + "Scr", score);
 		prefs.flush();
 		}else if(write > Screen2.levels){
-			prefs.putInteger("setting", 1);
+			prefs.putInteger(func, 1);
 			prefs.putBoolean("endless", true);
-			prefs.putInteger("scr", score);
+			prefs.putInteger(func + "Scr", score);
 			prefs.flush();
 		}
 	}
 	
-	public int getLevel() {
-		setting = prefs.getInteger("setting");
+	public LevelGroups getStage() {
+		LevelGroups temp = LevelGroups.getLast();
+		
+		while(temp != null) {
+			if(getLevel(temp) > 0)
+				return stage = temp;
+			
+			temp = temp.getPrev();
+		}
+		
+		return stage = LevelGroups.NORMAL;
+	}
+	
+	public int getLevel(LevelGroups group) {
+		setting = prefs.getInteger(group.getDir());
 		return setting;
 	}
 	
-	public int getLevelsAmount(){
+	public int getScore(LevelGroups group) {
+		score = prefs.getInteger(group.getDir() + "Scr");
+		return score;
+	}
+	
+	public int getLevelsAmount(LevelGroups group){
 		//int a = 1;
 		//FileHandle file;
+		a = -1;
 		while(true){
-			FileHandle file = Gdx.files.local("levels/" + (a + 1) + ".tmx");
+			FileHandle file = Gdx.files.local("levels/" + group.getDir() + "/" + (a + 1) + ".tmx");
 			if(file.exists()) a++;
 			else break;
 			//file = Gdx.files.internal(a + ".lvl");
@@ -69,6 +90,9 @@ public class SettingReader {
 			//file = new File(a + ".lvl");
 		//}
 		//System.out.println(a);
+		if(a == -1)
+			noLevels = true;
+		
 		return a;
 	}
 

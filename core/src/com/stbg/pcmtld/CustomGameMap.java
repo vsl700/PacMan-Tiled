@@ -25,7 +25,7 @@ public class CustomGameMap extends GameMap {
 		playerIndex = getPlayerIndex();
 		
 		
-		tiles = TextureRegion.split(new Texture("levels/res/tiles.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+		tiles = TextureRegion.split(new Texture("levels/pri/res/tiles.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 	}
 	
 	@Override

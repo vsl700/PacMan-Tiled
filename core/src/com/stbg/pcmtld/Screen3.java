@@ -71,7 +71,7 @@ public class Screen3 implements Screen {
 	public Screen3(MyGdxGame mg) {
 		game = mg;
 
-		gameMap = new TiledGameMap(lvl);
+		//gameMap = new TiledGameMap(lvl);
 		// firstCreated = true;
 
 		cam = new OrthographicCamera();
@@ -172,7 +172,7 @@ public class Screen3 implements Screen {
 		if(cont) gameMap.loadCheck();
 		else {
 			lvl = Screen2.toplay;
-			gameMap = new TiledGameMap(lvl);
+			gameMap = new TiledGameMap(SettingReader.stage, lvl);
 			set = new SettingReader();
 
 			// cam.setToOrtho(false, 860, 480);
@@ -389,7 +389,7 @@ public class Screen3 implements Screen {
 		}*/
 
 		if (gameMap.isFinish()) {
-			set.writer("setting", lvl + 1, SettingReader.score + (int) (Player.score + Player.getTime()) * (int) (GameMap.playerHealth));
+			set.writer(SettingReader.stage.getDir(), lvl + 1, SettingReader.score + (int) (Player.score + Player.getTime()) * (int) (GameMap.playerHealth));
 			Screen2.setToplay(lvl + 1);
 			game.setScreen(game.finish);
 		}

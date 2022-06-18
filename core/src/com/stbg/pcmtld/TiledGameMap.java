@@ -15,10 +15,10 @@ public class TiledGameMap extends GameMap {
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	public boolean ready = false;
 	
-	public TiledGameMap(int lvl) {
+	public TiledGameMap(LevelGroups stage, int lvl) {
 		// TODO Auto-generated constructor stub
 		ready = false;
-		tiledMap = new TmxMapLoader().load("levels/" + lvl + ".tmx");
+		tiledMap = new TmxMapLoader().load("levels/" + stage.getDir() + "/" + lvl + ".tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		entities.addAll(EntityLoader.loadEntitiesFromMap(this));
 		entities.trimToSize();
