@@ -44,6 +44,10 @@ public class SettingReader {
 		prefs.putInteger(func + "Scr", score);
 		prefs.flush();
 		}else if(write > Screen2.levels){
+			LevelGroups next = stage.getNext();
+			if(next != null && prefs.getInteger(next.getDir()) == 0)
+				prefs.putInteger(next.getDir(), 1);
+			
 			prefs.putInteger(func, 1);
 			prefs.putBoolean("endless", true);
 			prefs.putInteger(func + "Scr", score);

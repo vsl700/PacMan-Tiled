@@ -173,7 +173,6 @@ public class Screen3 implements Screen {
 		else {
 			lvl = Screen2.toplay;
 			gameMap = new TiledGameMap(SettingReader.stage, lvl);
-			set = new SettingReader();
 
 			// cam.setToOrtho(false, 860, 480);
 
@@ -389,6 +388,7 @@ public class Screen3 implements Screen {
 		}*/
 
 		if (gameMap.isFinish()) {
+			set = new SettingReader();
 			set.writer(SettingReader.stage.getDir(), lvl + 1, SettingReader.score + (int) (Player.score + Player.getTime()) * (int) (GameMap.playerHealth));
 			Screen2.setToplay(lvl + 1);
 			game.setScreen(game.finish);
