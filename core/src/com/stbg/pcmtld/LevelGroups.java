@@ -1,18 +1,23 @@
 package com.stbg.pcmtld;
 
+import com.badlogic.gdx.graphics.Color;
+
 public enum LevelGroups {
 
-	NORMAL("pri", "Primary levels"),
-	JUNGLE("jun", "Jungle levels"),
-	ICEAGE("ice", "Ice-age levels"),
-	DESERT("des", "Desert levels");
+	NORMAL("pri", "Primary levels", Color.BLUE, Color.BLACK),
+	JUNGLE("jun", "Jungle levels", Color.CYAN, Color.FOREST),
+	ICEAGE("ice", "Ice-age levels", Color.BLUE, Color.BLACK),
+	DESERT("des", "Desert levels", Color.BLUE, Color.BLACK);
 	
 	private String dir;
 	private String name;
+	private Color upColor, downColor;
 	
-	private LevelGroups(String dir, String name) {
+	private LevelGroups(String dir, String name, Color upColor, Color downColor) {
 		this.dir = dir;
 		this.name = name;
+		this.upColor = upColor;
+		this.downColor = downColor;
 	}
 	
 	public String getDir() {
@@ -21,6 +26,14 @@ public enum LevelGroups {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public Color getUpColor() {
+		return upColor;
+	}
+	
+	public Color getDownColor() {
+		return downColor;
 	}
 	
 	public static int length() {

@@ -205,7 +205,7 @@ public class Screen3 implements Screen {
 		// System.out.println(player.playerX);
 		shapes.begin(ShapeRenderer.ShapeType.Filled);
 		shapes.setProjectionMatrix(cam.combined);
-		shapes.rect(0, 0, cam.viewportWidth, cam.viewportHeight, Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE);
+		shapes.rect(0, 0, cam.viewportWidth, cam.viewportHeight, SettingReader.stage.getDownColor(), SettingReader.stage.getDownColor(), SettingReader.stage.getUpColor(), SettingReader.stage.getUpColor());
 		shapes.end();
 
 		if (!paused)
