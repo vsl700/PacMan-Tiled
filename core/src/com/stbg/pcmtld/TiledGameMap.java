@@ -1,6 +1,8 @@
 package com.stbg.pcmtld;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -11,12 +13,17 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;;
 
 public class TiledGameMap extends GameMap {
 	
+	Texture background;
+	
 	TiledMap tiledMap;
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	public boolean ready = false;
 	
 	public TiledGameMap(LevelGroups stage, int lvl) {
 		// TODO Auto-generated constructor stub
+		if(Gdx.files.local("levels/" + stage.getDir() + "/res/" + "bg.png").exists())
+			background = new Texture(Gdx.files.local("levels/" + stage.getDir() + "/res/" + "bg.png"));
+		
 		ready = false;
 		tiledMap = new TmxMapLoader().load("levels/" + stage.getDir() + "/" + lvl + ".tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -28,6 +35,13 @@ public class TiledGameMap extends GameMap {
 
 	@Override
 	public void render(OrthographicCamera camera, SpriteBatch batch){
+		if(background != null) {
+			//batch.setProjectionMatrix(camera.combined);
+			batch.begin();
+			batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
+			batch.end();
+		}
+		
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
 		

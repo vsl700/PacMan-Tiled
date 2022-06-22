@@ -191,6 +191,7 @@ public class Screen2 implements Screen {
 			currentStage = currentStage.getPrev();
 			setLevelDataTexts();
 		}else if (Gdx.input.isKeyJustPressed(Keys.T)) {
+			SettingReader.stage = currentStage;
 			toplay = 0;
 			game.setScreen(game.scn3);
 		}
