@@ -19,7 +19,8 @@ public class SettingReader {
 	public SettingReader(){
 		prefs = Gdx.app.getPreferences("pacman");
 		
-		getStage();
+		if(stage == null)
+			getStage();
 		getLevel(stage);
 		getScore(stage);
 		endless = prefs.getBoolean("endless");

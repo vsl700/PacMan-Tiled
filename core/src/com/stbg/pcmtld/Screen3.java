@@ -173,6 +173,8 @@ public class Screen3 implements Screen {
 		else {
 			lvl = Screen2.toplay;
 			gameMap = new TiledGameMap(SettingReader.stage, lvl);
+			gameMap.xCamOffset = 200;
+			gameMap.yCamOffset = -0;
 
 			// cam.setToOrtho(false, 860, 480);
 
@@ -460,6 +462,9 @@ public class Screen3 implements Screen {
 
 		// Vector3 temp = cam2.position.cpy();
 		cam2.setToOrtho(false, width, height);
+		if(width >= 1000 && height >= 640)
+			cam2.zoom = 0.75f;
+		else cam2.zoom = 1f;
 		// cam2.position.x = temp.x;
 		// cam2.position.y = temp.y;
 		// cam2.position.z = temp.z;
