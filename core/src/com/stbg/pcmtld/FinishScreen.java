@@ -106,6 +106,9 @@ public class FinishScreen implements Screen {
 		//System.out.println(newLevel);
 		
 		if(next.justTouched()){
+			if(newLevel == 1)
+				SettingReader.stage = SettingReader.stage.getNext();
+			
 			Screen2.setToplay(newLevel);
 			//Screen3.lvl = newLevel;
 			game.setScreen(game.scn3);
