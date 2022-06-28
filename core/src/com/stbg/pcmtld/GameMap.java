@@ -253,9 +253,9 @@ public abstract class GameMap {
 					if (type != null) {
 						if (type.isCollidable() && !entity.isToLadder()) {
 							if (entity.getClass() == Player.class) {
-								if (type.getId() == 3) {
+								if (type.getId() == TileType.FINISH.getId()) {
 									finish = true;
-								} else if (type.getId() == 18)
+								} else if (type.getId() == TileType.CHECKPOINT.getId())
 									checkPoint();
 							}
 
