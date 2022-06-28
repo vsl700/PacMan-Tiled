@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class DestroyableBlock extends Entity {
 	
-	private Texture walkSheet;
+	private TextureRegion aliveTexture;
 
     private static final int    FRAME_COLS = 2;     
     private static final int    FRAME_ROWS = 1;
@@ -18,7 +18,7 @@ public class DestroyableBlock extends Entity {
 
     
     
-    private Texture walkSheet2;   
+    private Texture dyingTexture;   
 
     static Animation           dieAnimation;      
     static TextureRegion[]         walkFrames2;     
@@ -41,15 +41,16 @@ public class DestroyableBlock extends Entity {
 		isTouched = false;
 		isDead = false;
 		
-		walkSheet = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-block.png"));
+		Texture temp = new Texture(Gdx.files.local("levels/" + SettingReader.stage.getDir() + "/res/tiles.png"));
+		aliveTexture = TextureRegion.split(temp, 32, 32)[0][0];
 		
         //}
         
         //else if(left){
-			walkSheet2 = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-block-dying.png"));
+			dyingTexture = temp;
 			
 			
-			TextureRegion[][] tmp2 = TextureRegion.split(walkSheet2, walkSheet2.getWidth()/FRAME_COLS, walkSheet2.getHeight()/FRAME_ROWS);              // #10
+			TextureRegion[][] tmp2 = TextureRegion.split(dyingTexture, TileType.TILE_SIZE, TileType.TILE_SIZE);              // #10
 	        walkFrames2 = new TextureRegion[FRAME_COLS * FRAME_ROWS];
 	        int index2 = 0;
 	        for (int i = 0; i < FRAME_ROWS; i++) {
@@ -82,15 +83,15 @@ public class DestroyableBlock extends Entity {
 		
 		//batch.setProjectionMatrix(camera.combined);
 		if(isTouched()) batch.draw(dieAnimation.getKeyFrame(stateTime, true), pos.x, pos.y);
-		else batch.draw(walkSheet, pos.x, pos.y);
+		else batch.draw(aliveTexture, pos.x, pos.y);
 		
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		walkSheet.dispose();
-		walkSheet2.dispose();
+		aliveTexture.getTexture().dispose();
+		//walkSheet2.dispose();
 	}
 	
 	@Override
