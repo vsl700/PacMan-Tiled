@@ -452,7 +452,7 @@ public class Screen3 implements Screen {
 	public void resize(int width, int height) {
 		cam.setToOrtho(false, width, height);
 
-		font.getData().setScale(width / 430 - 1);
+		font.getData().setScale(Math.max(width / 430 - 1, 1));
 		font2.getData().setScale(width / 430);
 		// font2.getData().setScale(width / 430 - 1);
 		

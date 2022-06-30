@@ -20,9 +20,8 @@ public class DestroyableBlock extends Entity {
     
     private Texture dyingTexture;   
 
-    static Animation           dieAnimation;      
-    static TextureRegion[]         walkFrames2;     
-    static TextureRegion           currentFrame2;
+    private Animation           dieAnimation;      
+    private TextureRegion[]         walkFrames2; 
     
     float stateTime;
     

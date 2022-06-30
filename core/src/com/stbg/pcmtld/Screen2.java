@@ -130,7 +130,7 @@ public class Screen2 implements Screen {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		batch.draw(texture, game.calculateX((1280 - texture.getWidth()) / 2), game.calculateY(600), game.calculateX(texture.getWidth()), game.calculateY(texture.getHeight()));
-		if (sr.noLevels)
+		if (sr.getLevelsAmount(currentStage) < 1)
 			// font.draw(batch, "New Game", (cam.viewportWidth -
 			// font.getSpaceWidth()) / 2 - 100, 500);
 			font.draw(batch, "Opps! We Forgot The Levels!", game.calculateX((1280 - font.getSpaceWidth()) / 2 - 100), game.calculateY(480));
@@ -152,12 +152,14 @@ public class Screen2 implements Screen {
 				// font.getSpaceWidth()) / 2 + 125, 440);
 				// }
 			
-			if(currentStage.getNext() != null && sr.getLevel(currentStage.getNext()) > 0)
-				nextGroup.render();
 			
-			if(currentStage.getPrev() != null)
-				prevGroup.render();
 		}
+		
+		if(currentStage.getNext() != null && sr.getLevel(currentStage.getNext()) > 0)
+			nextGroup.render();
+		
+		if(currentStage.getPrev() != null)
+			prevGroup.render();
 		// font.draw(batch, "Go Back", (cam.viewportWidth -
 		// font.getSpaceWidth()) / 2 - 100, 150);
 		goBack.render();
@@ -167,7 +169,7 @@ public class Screen2 implements Screen {
 
 		if (goBack.justTouched()) {
 			game.setScreen(game.scn1);
-		} else if (newGame.justTouched() && !sr.noLevels) {
+		} else if (newGame.justTouched()/* && !sr.noLevels */) {
 			SettingReader.stage = currentStage;
 			
 			sr.writer(currentStage.getDir(), 1, 0);
@@ -176,7 +178,7 @@ public class Screen2 implements Screen {
 			endless = false;
 			Screen1.endless = false;
 			game.setScreen(game.scn3);
-		} else if (contGame.justTouched() && !sr.noLevels) {
+		} else if (contGame.justTouched()/* && !sr.noLevels */) {
 			SettingReader.stage = currentStage;
 			if (toplay > 1 || sr.score > 0) {
 				Screen1.endless = false;
