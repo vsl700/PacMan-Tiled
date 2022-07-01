@@ -125,6 +125,8 @@ public abstract class GameMap {
 				if (entities.get(i).isDead() && entities.get(i).getClass() != Player.class) {
 					entities.get(i).dispose();
 					entities.remove(i);
+					
+					getPlayerIndex();
 					// System.out.println("An entity just died.");
 				} else if (entities.get(i).isDead() && entities.get(i).getClass() == Player.class)
 					setDead(true);
@@ -174,6 +176,8 @@ public abstract class GameMap {
 			camera.translate((camRight ? speed : -speed) * delta, (camUp ? speed : -speed) * delta2);
 		}
 
+		camera.update();
+		
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
 
@@ -362,7 +366,7 @@ public abstract class GameMap {
 	public int getPlayerIndex() {
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities.get(i).getClass() == Player.class)
-				return i;
+				return playerIndex = i;
 		}
 
 		return -1;
