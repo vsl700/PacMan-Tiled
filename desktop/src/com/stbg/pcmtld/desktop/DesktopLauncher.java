@@ -13,7 +13,7 @@ public class DesktopLauncher {
 		
 		//config.useGL30 = true;
 		config.vSyncEnabled = false;
-		config.title = "PAC-MAN";
+		config.title = "PAC-MANIA";
 		config.addIcon("pacman/icon/pacman_ico.png", FileType.Internal);
 		config.width = MyGdxGame.WIDTH;
 		config.height = MyGdxGame.HEIGHT;
