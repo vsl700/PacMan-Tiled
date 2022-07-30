@@ -25,13 +25,14 @@ public class ScreenSaver implements Screen {
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
 		title = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-title-png.png"));
-		width = game.calculateX(title.getWidth());
-		height = game.calculateY(title.getHeight());
 	}
 
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
+		width = game.calculateX(title.getWidth());
+		height = game.calculateY(title.getHeight());
+		
 		x = game.calculateX((1280 - title.getWidth()) / 2);
 		y = game.calculateY(600);
 		
