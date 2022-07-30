@@ -70,7 +70,7 @@ public class MyGdxGame extends Game {
 	}
 
 	public void render() {
-		if(getScreen() != scn3 && getScreen() != scnS && System.currentTimeMillis() - timeout >= 1200000) {
+		if(getScreen() != scn3 && getScreen() != scnS && System.currentTimeMillis() - timeout >= 300000) {
 			temp = getScreen();
 			setScreen(scnS);
 		}
