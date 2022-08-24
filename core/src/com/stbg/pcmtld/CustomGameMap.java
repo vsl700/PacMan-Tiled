@@ -29,6 +29,11 @@ public class CustomGameMap extends GameMap {
 	}
 	
 	@Override
+	protected void loadDoors() {
+		
+	}
+	
+	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
         

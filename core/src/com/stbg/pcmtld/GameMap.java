@@ -1,14 +1,17 @@
 package com.stbg.pcmtld;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameMap {
 
 	protected ArrayList<Entity> entities;
 	protected ArrayList<Bullet> bullets;
+	protected HashMap<Vector2, Vector2> doors;
 	ArrayList<Entity> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
@@ -57,6 +60,8 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>(100);
 		bullets = new ArrayList<Bullet>(100);
+		doors = new HashMap<Vector2, Vector2>();
+		
 		playerHealth = (int) EntityType.PLAYER.getHealth();
 		playerToLadder = false;
 		// if(!SettingReader.noLevels)
@@ -74,6 +79,8 @@ public abstract class GameMap {
 		camRight = true;
 		camUp = true;
 	}
+	
+	protected abstract void loadDoors();
 
 	@SuppressWarnings("unchecked")
 	private void checkPoint() {
@@ -270,6 +277,20 @@ public abstract class GameMap {
 			}
 		}
 		return false;
+	}
+	
+	public Vector2 getCorrespondingDoor(float x, float y, int width, int height) {
+		for(Entry<Vector2, Vector2> doorPair : doors.entrySet()) {
+			Vector2 firstDoor = doorPair.getKey();
+			Vector2 secondDoor = doorPair.getValue();
+			if(firstDoor.x < x + width && firstDoor.x + TileType.TILE_SIZE > x && firstDoor.y < y + height && firstDoor.y + TileType.TILE_SIZE > y)
+				return secondDoor;
+			
+			if(secondDoor.x < x + width && secondDoor.x + TileType.TILE_SIZE > x && secondDoor.y < y + height && secondDoor.y + TileType.TILE_SIZE > y)
+				return firstDoor;
+		}
+		
+		return null;
 	}
 
 	public boolean doesRectCollideWithTile(float x, float y, float width, float height, TileType type) {
