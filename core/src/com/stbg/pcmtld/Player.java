@@ -30,6 +30,7 @@ public class Player extends Entity {
 	
 	public static float score = 0;
 	public static float time = 101;
+	public boolean rkey, gkey, bkey;
 	
 	public boolean invisible = false;
 	

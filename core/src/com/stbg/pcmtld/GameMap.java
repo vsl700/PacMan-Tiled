@@ -248,12 +248,28 @@ public abstract class GameMap {
 
 	public boolean doesRectCollideWithMap(float x, float y, int width, int height, Entity entity) {
 		for (Entity entity2 : entities) {
-			if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX() && y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
-				if (entity.getType().equals(EntityType.PLAYER) && entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
-					entity2.setTouched(true);
-					//System.out.println(entity.isTouched());
+			if (x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX()
+					&& y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
+				if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK)) {
+					if (entity.getType().equals(EntityType.PLAYER)
+							&& entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
+						entity2.setTouched(true);
+						// System.out.println(entity.isTouched());
+					}
+					return true;
+				}else if (entity2.getClass() == RedDoor.class) {
+					if(!getPlayerInstance().rkey) {
+						return true;
+					}
+				} else if (entity2.getClass() == GreenDoor.class) {
+					if(!getPlayerInstance().gkey) {
+						return true;
+					}
+				} else if (entity2.getClass() == BlueDoor.class) {
+					if(!getPlayerInstance().bkey) {
+						return true;
+					}
 				}
-				return true;
 			}
 		}
 
@@ -331,6 +347,27 @@ public abstract class GameMap {
 						}
 					} else if (entity.getClass() == Checkpoint.class) {
 						checkPoint();
+					} else if (entity.getClass() == RedKey.class) {
+						getPlayerInstance().rkey = true;
+						entity.die();
+					} else if (entity.getClass() == GreenKey.class) {
+						getPlayerInstance().gkey = true;
+						entity.die();
+					} else if (entity.getClass() == BlueKey.class) {
+						getPlayerInstance().bkey = true;
+						entity.die();
+					} else if (entity.getClass() == RedDoor.class) {
+						if(getPlayerInstance().rkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == GreenDoor.class) {
+						if(getPlayerInstance().gkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == BlueDoor.class) {
+						if(getPlayerInstance().bkey) {
+							entity.die();
+						}
 					} else
 						return true;
 				}
