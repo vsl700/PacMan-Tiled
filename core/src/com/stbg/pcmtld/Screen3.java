@@ -102,7 +102,7 @@ public class Screen3 implements Screen {
 
 		contBtn = new Button("Continue", font2, batch, shapes, cam, true, 0, Keys.ESCAPE);
 		contBtn.setMarkColor(Color.DARK_GRAY);
-		retryBtn = new Button("Retry", font2, batch, shapes, cam, true, 0, Keys.R);
+		retryBtn = new Button("Restart Level", font2, batch, shapes, cam, true, 0, Keys.R);
 		retryBtn.setMarkColor(Color.DARK_GRAY);
 		
 		quitBtn1 = new Button("Quit", font2, batch, shapes, cam, true, 0, Keys.Q);
@@ -169,8 +169,8 @@ public class Screen3 implements Screen {
 	@Override
 	public void show() {
 
-		if(cont) gameMap.loadCheck();
-		else {
+		/*if(cont) gameMap.loadCheck();
+		else {*/
 			lvl = Screen2.toplay;
 			gameMap = new TiledGameMap(SettingReader.stage, lvl);
 			gameMap.xCamOffset = 200;
@@ -179,7 +179,7 @@ public class Screen3 implements Screen {
 			// cam.setToOrtho(false, 860, 480);
 
 			// cam2.setToOrtho(false, 860, 480);
-		}
+		//}
 
 		paused = false;
 		gameMap.setDead(false);
@@ -415,8 +415,13 @@ public class Screen3 implements Screen {
 			if (Gdx.input.isKeyJustPressed(Keys.R)) {
 				// game.setScreen(game.scn3);
 				//crnt = false;
-				cont = false;
-				show();
+				if(gameMap.isCheckpointed()) {
+					gameMap.loadCheck();
+				}else {
+					cont = false;
+					gameMap.dispose();
+					show();
+				}
 				// gameMap = new TiledGameMap(lvl);
 			}
 			/*
@@ -457,7 +462,7 @@ public class Screen3 implements Screen {
 		// font2.getData().setScale(width / 430 - 1);
 		
 		contBtn.setLocation(game.calculateX((1280 - 13*font.getSpaceWidth() - 885) / 2), game.calculateY(465));
-		retryBtn.setLocation(game.calculateX(1280 - 8*font.getSpaceWidth() - 656), game.calculateY(465));
+		retryBtn.setLocation(game.calculateX(1280 - 8*font.getSpaceWidth() - 715), game.calculateY(465));
 		quitBtn1.setLocation(game.calculateX(1280 - 7*font.getSpaceWidth() - 305), game.calculateY(465));
 
 		// Vector3 temp = cam2.position.cpy();

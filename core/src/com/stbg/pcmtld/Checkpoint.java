@@ -9,7 +9,7 @@ public class Checkpoint extends Entity {
 	
 	Texture notChecked, checked;
 	
-	boolean check;
+	private boolean check;
 	
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
@@ -18,7 +18,14 @@ public class Checkpoint extends Entity {
 		notChecked = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-checkp-notreached.png"));
 		checked = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-checkp-reached.png"));
 		
-		check = false;
+		check = snapshot.getBoolean("check", false);
+	}
+	
+	@Override
+	protected void saveEntityData(EntitySnapshot snapshot) {
+		super.saveEntityData(snapshot);
+		
+		snapshot.putBoolean("check", check);
 	}
 	
 	@Override
@@ -33,6 +40,14 @@ public class Checkpoint extends Entity {
 		// TODO Auto-generated method stub
 		notChecked.dispose();
 		checked.dispose();
+	}
+
+	public boolean isCheck() {
+		return check;
+	}
+
+	public void setCheck(boolean check) {
+		this.check = check;
 	}
 
 }

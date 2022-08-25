@@ -27,18 +27,12 @@ public class DestroyableBlock extends Entity {
     
     float deathTime;
     
-    static boolean isTouched;
-    static boolean isDead;
-    
 	
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map){
 		super.create(snapshot, type, map);
 		
-		deathTime = 0.75f;
-		
-		isTouched = false;
-		isDead = false;
+		deathTime = snapshot.getFloat("deathTime", 0.75f);
 		
 		Texture temp = new Texture(Gdx.files.local("levels/" + SettingReader.stage.getDir() + "/res/tiles.png"));
 		aliveTexture = TextureRegion.split(temp, 32, 32)[0][0];
@@ -59,6 +53,13 @@ public class DestroyableBlock extends Entity {
 	        }
 	        dieAnimation = new Animation(0.1f, walkFrames2);
 		
+	}
+	
+	@Override
+	protected void saveEntityData(EntitySnapshot snapshot) {
+		super.saveEntityData(snapshot);
+		
+		snapshot.putFloat("deathTime", deathTime);
 	}
 	
 	public void update(float deltaTime , float gravity){

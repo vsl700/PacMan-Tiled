@@ -175,6 +175,10 @@ public class EntityLoader {
 							EntitySnapshot snapshot = new EntitySnapshot("destblock", x * 32, y * 32);
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.CHECKPOINT){
+							EntitySnapshot snapshot = new EntitySnapshot("check", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}
 					}
 				}
