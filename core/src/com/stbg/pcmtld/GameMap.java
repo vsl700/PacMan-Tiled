@@ -1,14 +1,17 @@
 package com.stbg.pcmtld;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameMap {
 
 	protected ArrayList<Entity> entities;
 	protected ArrayList<Bullet> bullets;
+	protected HashMap<Vector2, Vector2> doors;
 	ArrayList<Entity> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
@@ -57,6 +60,8 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>(100);
 		bullets = new ArrayList<Bullet>(100);
+		doors = new HashMap<Vector2, Vector2>();
+		
 		playerHealth = (int) EntityType.PLAYER.getHealth();
 		playerToLadder = false;
 		// if(!SettingReader.noLevels)
@@ -74,6 +79,8 @@ public abstract class GameMap {
 		camRight = true;
 		camUp = true;
 	}
+	
+	protected abstract void loadDoors();
 
 	@SuppressWarnings("unchecked")
 	private void checkPoint() {
@@ -241,12 +248,28 @@ public abstract class GameMap {
 
 	public boolean doesRectCollideWithMap(float x, float y, int width, int height, Entity entity) {
 		for (Entity entity2 : entities) {
-			if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX() && y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
-				if (entity.getType().equals(EntityType.PLAYER) && entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
-					entity2.setTouched(true);
-					//System.out.println(entity.isTouched());
+			if (x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX()
+					&& y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
+				if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && !entity.isToLadder()) {
+					if (entity.getType().equals(EntityType.PLAYER)
+							&& entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
+						entity2.setTouched(true);
+						// System.out.println(entity.isTouched());
+					}
+					return true;
+				}else if (entity2.getType().equals(EntityType.REDDORR)) {
+					if(!getPlayerInstance().rkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
+				} else if (entity2.getType().equals(EntityType.GREENDOOR)) {
+					if(!getPlayerInstance().gkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
+				} else if (entity2.getType().equals(EntityType.BLUEDOOR)) {
+					if(!getPlayerInstance().bkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
 				}
-				return true;
 			}
 		}
 
@@ -270,6 +293,20 @@ public abstract class GameMap {
 			}
 		}
 		return false;
+	}
+	
+	public Vector2 getCorrespondingDoor(float x, float y, int width, int height) {
+		for(Entry<Vector2, Vector2> doorPair : doors.entrySet()) {
+			Vector2 firstDoor = doorPair.getKey();
+			Vector2 secondDoor = doorPair.getValue();
+			if(firstDoor.x < x + width && firstDoor.x + TileType.TILE_SIZE > x && firstDoor.y < y + height && firstDoor.y + TileType.TILE_SIZE > y)
+				return secondDoor;
+			
+			if(secondDoor.x < x + width && secondDoor.x + TileType.TILE_SIZE > x && secondDoor.y < y + height && secondDoor.y + TileType.TILE_SIZE > y)
+				return firstDoor;
+		}
+		
+		return null;
 	}
 
 	public boolean doesRectCollideWithTile(float x, float y, float width, float height, TileType type) {
@@ -310,6 +347,27 @@ public abstract class GameMap {
 						}
 					} else if (entity.getClass() == Checkpoint.class) {
 						checkPoint();
+					} else if (entity.getClass() == RedKey.class) {
+						getPlayerInstance().rkey = true;
+						entity.die();
+					} else if (entity.getClass() == GreenKey.class) {
+						getPlayerInstance().gkey = true;
+						entity.die();
+					} else if (entity.getClass() == BlueKey.class) {
+						getPlayerInstance().bkey = true;
+						entity.die();
+					} else if (entity.getClass() == RedDoor.class) {
+						if(getPlayerInstance().rkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == GreenDoor.class) {
+						if(getPlayerInstance().gkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == BlueDoor.class) {
+						if(getPlayerInstance().bkey) {
+							entity.die();
+						}
 					} else
 						return true;
 				}

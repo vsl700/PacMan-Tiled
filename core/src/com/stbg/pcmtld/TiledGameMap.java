@@ -9,7 +9,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;;
 
 public class TiledGameMap extends GameMap {
 	
@@ -29,8 +30,37 @@ public class TiledGameMap extends GameMap {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		entities.addAll(EntityLoader.loadEntitiesFromMap(this));
 		entities.trimToSize();
+		loadDoors();
 		ready = true;
 		playerIndex = getPlayerIndex();
+	}
+	
+	@Override
+	protected void loadDoors() {
+		for(int layer = 0; layer < getLayers(); layer++) {
+			Vector2 firstDoor = null;
+			for(int row = 0; row < getHeight(); row++) {
+				boolean flag = false;
+				for(int col = 0; col < getWidth(); col++) {
+					TileType tile = getTileTypeByCoordinate(layer, col, row);
+					if(tile!= null && tile.equals(TileType.DOOR)) {
+						if(firstDoor == null) {
+							firstDoor = new Vector2(col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+						}
+						else {
+							Vector2 secondDoor = new Vector2(col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+							doors.put(firstDoor, secondDoor);
+							
+							flag = true;
+							break;
+						}
+					}
+				}
+				
+				if(flag)
+					break;
+			}
+		}
 	}
 
 	@Override

@@ -24,6 +24,7 @@ public abstract class Entity {
 	protected boolean up = false;
 	protected boolean down = false;
 	protected boolean ladder = false;
+	protected boolean door = false;
 	protected int health;
 
 	// private boolean dead;
@@ -115,7 +116,14 @@ public abstract class Entity {
 			}
 		}
 		
-		if (!type.isCollectable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
+		if(door) { // TODO BETA!!!!
+			Vector2 temp = map.getCorrespondingDoor(getX(), getY(), getWidth(), getHeight());
+			
+			if(temp != null)
+				pos.set(temp);
+		}
+		
+		if (!type.isCollectable() && type.isKillable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
 			setHealth(getHealth() - 1);
 			//setStartTime(1.15f);
 		}

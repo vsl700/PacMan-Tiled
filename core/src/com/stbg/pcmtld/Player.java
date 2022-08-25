@@ -30,6 +30,7 @@ public class Player extends Entity {
 	
 	public static float score = 0;
 	public static float time = 101;
+	public boolean rkey, gkey, bkey;
 	
 	public boolean invisible = false;
 	
@@ -184,6 +185,8 @@ public class Player extends Entity {
 		
 		
 		ladder = canBeLaddered() && Gdx.input.isKeyJustPressed(Keys.SPACE);
+		
+		door = Gdx.input.isKeyJustPressed(Keys.E) || Gdx.input.isKeyJustPressed(Keys.CONTROL_LEFT);
 
 		if(Gdx.input.isKeyPressed(Keys.LEFT)) moveLeft = true;
 		else if(Gdx.input.isKeyPressed(Keys.RIGHT)) moveRight = true;
