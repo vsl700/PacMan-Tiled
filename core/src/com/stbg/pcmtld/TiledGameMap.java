@@ -52,6 +52,7 @@ public class TiledGameMap extends GameMap {
 							doors.put(firstDoor, secondDoor);
 							
 							flag = true;
+							break;
 						}
 					}
 				}

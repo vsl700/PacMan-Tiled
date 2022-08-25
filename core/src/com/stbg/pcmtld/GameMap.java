@@ -250,23 +250,23 @@ public abstract class GameMap {
 		for (Entity entity2 : entities) {
 			if (x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX()
 					&& y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
-				if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK)) {
+				if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && !entity.isToLadder()) {
 					if (entity.getType().equals(EntityType.PLAYER)
 							&& entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
 						entity2.setTouched(true);
 						// System.out.println(entity.isTouched());
 					}
 					return true;
-				}else if (entity2.getClass() == RedDoor.class) {
-					if(!getPlayerInstance().rkey) {
+				}else if (entity2.getType().equals(EntityType.REDDORR)) {
+					if(!getPlayerInstance().rkey || !entity.getType().equals(EntityType.PLAYER)) {
 						return true;
 					}
-				} else if (entity2.getClass() == GreenDoor.class) {
-					if(!getPlayerInstance().gkey) {
+				} else if (entity2.getType().equals(EntityType.GREENDOOR)) {
+					if(!getPlayerInstance().gkey || !entity.getType().equals(EntityType.PLAYER)) {
 						return true;
 					}
-				} else if (entity2.getClass() == BlueDoor.class) {
-					if(!getPlayerInstance().bkey) {
+				} else if (entity2.getType().equals(EntityType.BLUEDOOR)) {
+					if(!getPlayerInstance().bkey || !entity.getType().equals(EntityType.PLAYER)) {
 						return true;
 					}
 				}

@@ -123,7 +123,7 @@ public abstract class Entity {
 				pos.set(temp);
 		}
 		
-		if (!type.isCollectable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
+		if (!type.isCollectable() && type.isKillable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
 			setHealth(getHealth() - 1);
 			//setStartTime(1.15f);
 		}
