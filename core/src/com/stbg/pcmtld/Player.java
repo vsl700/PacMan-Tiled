@@ -95,7 +95,7 @@ public class Player extends Entity {
 		gkey = snapshot.getBoolean("gkey", false);
 		bkey = snapshot.getBoolean("bkey", false);
 		
-		startTime = snapshot.getFloat("startTime", 1.15f);
+		startTime = /*snapshot.getFloat("startTime", 1.15f)*/ 1.15f; // For effect
 		//health = 50;
 		
 		effects = new LinkedList<Effects.Effect>();

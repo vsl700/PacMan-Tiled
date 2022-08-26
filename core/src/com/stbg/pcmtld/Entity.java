@@ -169,7 +169,7 @@ public abstract class Entity {
 	}
 	
 	protected void saveEntityData(EntitySnapshot snapshot) {
-		snapshot.putFloat("health", health);
+		snapshot.putInt("health", health);
 		snapshot.putFloat("velocityY", velocityY);
 		snapshot.putBoolean("right", right);
 		snapshot.putBoolean("touched", touched);

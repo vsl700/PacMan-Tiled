@@ -462,7 +462,7 @@ public class Screen3 implements Screen {
 		// font2.getData().setScale(width / 430 - 1);
 		
 		contBtn.setLocation(game.calculateX((1280 - 13*font.getSpaceWidth() - 885) / 2), game.calculateY(465));
-		retryBtn.setLocation(game.calculateX(1280 - 8*font.getSpaceWidth() - 715), game.calculateY(465));
+		retryBtn.setLocation(game.calculateX(515), game.calculateY(465));
 		quitBtn1.setLocation(game.calculateX(1280 - 7*font.getSpaceWidth() - 305), game.calculateY(465));
 
 		// Vector3 temp = cam2.position.cpy();
