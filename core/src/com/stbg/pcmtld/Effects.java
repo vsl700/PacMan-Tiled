@@ -2,8 +2,8 @@ package com.stbg.pcmtld;
 
 public final class Effects {
 
-	public static Effect speedEffect(int time) {
-		return new Effect(time) {
+	public static Effect speedEffect(float time) {
+		return new Effect("speed", time) {
 			int speedOffset = 170;
 			
 			@Override
@@ -22,8 +22,8 @@ public final class Effects {
 		};
 	}
 	
-	public static Effect invisibilityEffect(int time) {
-		return new Effect(time) {
+	public static Effect invisibilityEffect(float time) {
+		return new Effect("invis", time) {
 			
 			@Override
 			public void onStart(Player player) {
@@ -46,8 +46,8 @@ public final class Effects {
 		};
 	}
 	
-	public static Effect shootingEffect(int time) {
-		return new Effect(time) {
+	public static Effect shootingEffect(float time) {
+		return new Effect("shoot", time) {
 			float timeInterval;
 			
 			@Override
@@ -71,9 +71,11 @@ public final class Effects {
 	}
 	
 	public static abstract class Effect {
+		protected String id;
 		protected float time;
 		
-		public Effect(int time) {
+		public Effect(String id, float time) {
+			this.id = id;
 			this.time = time;
 		}
 		
@@ -96,5 +98,13 @@ public final class Effects {
 			return true;
 		}
 		public abstract void onEnd(Player player);
+		
+		public String getId() {
+			return id;
+		}
+		
+		public float getTime() {
+			return time;
+		}
 	}
 }

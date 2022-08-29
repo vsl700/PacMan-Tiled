@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public class EntitySnapshot {
 
-	public static String type;
-	public static float x;
-	public static float y;
+	public String type;
+	public float x;
+	public float y;
 	public HashMap<String, String> data;
 	
 	public EntitySnapshot() {
@@ -14,9 +14,10 @@ public class EntitySnapshot {
 	}
 	
 	public EntitySnapshot(String type, float x, float y){
-		EntitySnapshot.type = type;
-		EntitySnapshot.x = x;
-		EntitySnapshot.y = y;
+		this.type = type;
+		this.x = x;
+		this.y = y;
+		data = new HashMap<String, String>();
 	}
 
 	
@@ -25,7 +26,7 @@ public class EntitySnapshot {
 	}
 
 	public void setType(String type) {
-		EntitySnapshot.type = type;
+		this.type = type;
 	}
 
 	public float getX() {
@@ -33,7 +34,7 @@ public class EntitySnapshot {
 	}
 
 	public void setX(float x) {
-		EntitySnapshot.x = x;
+		this.x = x;
 	}
 
 	public float getY() {
@@ -41,7 +42,7 @@ public class EntitySnapshot {
 	}
 
 	public void setY(float y) {
-		EntitySnapshot.y = y;
+		this.y = y;
 	}
 	
 	public void putFloat(String key, float value){

@@ -28,7 +28,7 @@ public class Player extends Entity {
 	
 	private static final int JUMP_VELOCITY = 5;
 	
-	public static float score = 0;
+	public static int score = 0;
 	public static float time = 101;
 	public boolean rkey, gkey, bkey;
 	
@@ -87,14 +87,29 @@ public class Player extends Entity {
 		deadPlayer = false;
 		movingRight = false;
 		movingLeft = false;
-		score = 0;
-		time = 101;
+		score = snapshot.getInt("score", 0);
+		time = snapshot.getFloat("time", 101);
 		SPEED = 125;
 		
-		startTime = 1.15f;
+		rkey = snapshot.getBoolean("rkey", false);
+		gkey = snapshot.getBoolean("gkey", false);
+		bkey = snapshot.getBoolean("bkey", false);
+		
+		startTime = /*snapshot.getFloat("startTime", 1.15f)*/ 1.15f; // For effect
 		//health = 50;
 		
 		effects = new LinkedList<Effects.Effect>();
+		for(int i = snapshot.getInt("effect-speed-power", 0); i > 0; i--) {
+			applyEffect(Effects.speedEffect(snapshot.getFloat("effect-speed-time", 0)));
+		}
+		
+		for(int i = snapshot.getInt("effect-invis-power", 0); i > 0; i--) {
+			applyEffect(Effects.invisibilityEffect(snapshot.getFloat("effect-invis-time", 0)));
+		}
+		
+		for(int i = snapshot.getInt("effect-shoot-power", 0); i > 0; i--) {
+			applyEffect(Effects.shootingEffect(snapshot.getFloat("effect-shoot-time", 0)));
+		}
 		
 		//if(right){
 		walkSheet = new Texture(Gdx.files.internal("pacman/pacmanassets/pacman-right.png"));
@@ -163,6 +178,25 @@ public class Player extends Entity {
 	        }
 	        hurtAnimation2 = new Animation(0.1f, walkFrames5);
         //}
+	}
+	
+	@Override
+	protected void saveEntityData(EntitySnapshot snapshot) {
+		super.saveEntityData(snapshot);
+		
+		snapshot.putInt("score", score);
+		snapshot.putFloat("time", time);
+		snapshot.putBoolean("rkey", rkey);
+		snapshot.putBoolean("gkey", gkey);
+		snapshot.putBoolean("bkey", bkey);
+		
+		for(Effect effect : effects) {
+			String id1 = "effect-" + effect.getId() + "-power";
+			snapshot.putInt(id1, snapshot.getInt(id1, 0) + 1);
+			
+			String id2 = "effect-" + effect.getId() + "-time";
+			snapshot.putFloat(id2, effect.getTime());
+		}
 	}
 	
 	public void update(float deltaTime , float gravity){
@@ -365,11 +399,11 @@ public class Player extends Entity {
 		return snapshot;
 	}
 	
-	public static float getScore() {
+	public static int getScore() {
 		return score;
 	}
 
-	public static void setScore(float score) {
+	public static void setScore(int score) {
 		Player.score = score;
 	}
 

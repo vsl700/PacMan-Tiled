@@ -40,17 +40,19 @@ public abstract class Entity {
 		this.pos = new Vector2(snapshot.getX(), snapshot.getY());
 		this.type = type;
 		this.map = map;
+		
+		velocityY = snapshot.getFloat("velocityY", 0);
 
-		health = (int) getType().getHealth();
+		health = snapshot.getInt("health", (int) getType().getHealth());
 
 		// dead = false;
 
 		hurt = false;
 
-		right = true;
-		touched = false;
+		right = snapshot.getBoolean("right", true);
+		touched = snapshot.getBoolean("touched", false);
 		dead = false;
-		toLadder = false;
+		toLadder = snapshot.getBoolean("toLadder", false);
 
 		
 
@@ -116,7 +118,7 @@ public abstract class Entity {
 			}
 		}
 		
-		if(door) { // TODO BETA!!!!
+		if(door) {
 			Vector2 temp = map.getCorrespondingDoor(getX(), getY(), getWidth(), getHeight());
 			
 			if(temp != null)
@@ -161,7 +163,18 @@ public abstract class Entity {
 	}
 
 	public EntitySnapshot getSaveSnapshot() {
-		return new EntitySnapshot(type.getId(), pos.x, pos.y);
+		EntitySnapshot snapshot = new EntitySnapshot(type.getId(), pos.x, pos.y);
+		saveEntityData(snapshot);
+		return snapshot;
+	}
+	
+	protected void saveEntityData(EntitySnapshot snapshot) {
+		snapshot.putInt("health", health);
+		snapshot.putFloat("velocityY", velocityY);
+		snapshot.putBoolean("right", right);
+		snapshot.putBoolean("touched", touched);
+		snapshot.putFloat("startTime", startTime);
+		snapshot.putBoolean("toLadder", toLadder);
 	}
 
 	public Vector2 getPos() {

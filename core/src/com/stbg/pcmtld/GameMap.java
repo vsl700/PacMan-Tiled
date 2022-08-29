@@ -12,7 +12,7 @@ public abstract class GameMap {
 	protected ArrayList<Entity> entities;
 	protected ArrayList<Bullet> bullets;
 	protected HashMap<Vector2, Vector2> doors;
-	ArrayList<Entity> checkP;
+	protected ArrayList<EntitySnapshot> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
 	private boolean camRight;
@@ -61,6 +61,7 @@ public abstract class GameMap {
 		entities = new ArrayList<Entity>(100);
 		bullets = new ArrayList<Bullet>(100);
 		doors = new HashMap<Vector2, Vector2>();
+		checkP = new ArrayList<EntitySnapshot>();
 		
 		playerHealth = (int) EntityType.PLAYER.getHealth();
 		playerToLadder = false;
@@ -68,7 +69,6 @@ public abstract class GameMap {
 		// entities.addAll(EntityLoader.loadEntitiesFromMap("" + Screen3.lvl,
 		// this, entities));
 		checkPLoad = false;
-		uncheck();
 		// System.out.println(String.valueOf(entities.get(3)));
 		// System.out.println(entities.size() - 1);
 		// entity = new Entity();
@@ -82,20 +82,21 @@ public abstract class GameMap {
 	
 	protected abstract void loadDoors();
 
-	@SuppressWarnings("unchecked")
 	private void checkPoint() {
-		checkP = (ArrayList<Entity>) entities.clone();
+		checkP.clear();
+		for(Entity e : entities) {
+			EntitySnapshot snapshot = e.getSaveSnapshot();
+			checkP.add(snapshot);
+		}
 
 		Screen3.setCheck();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void loadCheck() {
-		entities = (ArrayList<Entity>) checkP.clone();
-	}
-
-	public void uncheck() {
-		checkP = null;
+		entities.clear();
+		for(EntitySnapshot snapshot : checkP) {
+			entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+		}
 	}
 
 	public void update(float delta) {
@@ -113,7 +114,7 @@ public abstract class GameMap {
 					// Player.setPlayerDead(true);
 				}
 
-				if (entities.get(i).getClass() == Player.class) {
+				if (entities.get(i).getType().equals(EntityType.PLAYER)) {
 					playerHealth = entities.get(i).getHealth();
 					playerGrounded = entities.get(i).isGrounded();
 					playerToLadder = entities.get(i).isToLadder();
@@ -129,14 +130,17 @@ public abstract class GameMap {
 					entities.get(i).setLadder(ladder);
 				}
 
-				if (entities.get(i).isDead() && entities.get(i).getClass() != Player.class) {
+				if (entities.get(i).isDead() && !entities.get(i).getType().equals(EntityType.PLAYER)) {
 					entities.get(i).dispose();
 					entities.remove(i);
 					
 					getPlayerIndex();
 					// System.out.println("An entity just died.");
-				} else if (entities.get(i).isDead() && entities.get(i).getClass() == Player.class)
-					setDead(true);
+				} else if (entities.get(i).isDead() && entities.get(i).getType().equals(EntityType.PLAYER))
+					if(isCheckpointed()) {
+						loadCheck();
+						return;
+					}else setDead(true);
 
 			}
 
@@ -282,8 +286,8 @@ public abstract class GameMap {
 							if (entity.getClass() == Player.class) {
 								if (type.getId() == TileType.FINISH.getId()) {
 									finish = true;
-								} else if (type.getId() == TileType.CHECKPOINT.getId())
-									checkPoint();
+								} /*else if (type.getId() == TileType.CHECKPOINT.getId())
+									checkPoint();*/
 							}
 
 							return true;
@@ -326,6 +330,7 @@ public abstract class GameMap {
 		return false;
 	}
 
+	private Checkpoint currentCheck;
 	public boolean doesEntityCollideWithEntity(float x1, float y1, int width1, int height1, float startTime) {
 
 		// boolean ladderRetrigger = true;
@@ -333,7 +338,7 @@ public abstract class GameMap {
 		for (Entity entity : entities) {
 			// Return true if you want to hurt the player for some reason!
 			if (entity != null && entity.getClass() != Player.class) {
-				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 - (entity.getClass() == DestroyableBlock.class ? 3 : 0) && startTime <= 0) {
+				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 - (entity.getClass() == DestroyableBlock.class ? 3 : 0) && (startTime <= 0 || entity.getType().equals(EntityType.CHECKPOINT))) {
 					if (entity.getClass() == DestroyableBlock.class && entity.getY() < y1) {
 						if (!entity.isDead()) {
 							entity.setTouched(true);
@@ -346,7 +351,14 @@ public abstract class GameMap {
 							((Score) entity).onCollected(/* entities.get(getPlayerIndex()) */);
 						}
 					} else if (entity.getClass() == Checkpoint.class) {
-						checkPoint();
+						if (!((Checkpoint) entity).isCheck()) {
+							if (currentCheck != null)
+								currentCheck.setCheck(false);
+
+							checkPoint();// FIXME Swap this and the bottom line to remove the self-resetting checkpoint bug (I just left it for fun, for the 'speedrunners' or sth)
+							((Checkpoint) entity).setCheck(true);
+							currentCheck = (Checkpoint) entity;
+						}
 					} else if (entity.getClass() == RedKey.class) {
 						getPlayerInstance().rkey = true;
 						entity.die();
@@ -428,6 +440,10 @@ public abstract class GameMap {
 		}
 
 		return -1;
+	}
+	
+	public boolean isCheckpointed() {
+		return checkP.size() > 0;
 	}
 
 	public boolean isFinish() {
