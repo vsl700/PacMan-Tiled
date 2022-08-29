@@ -355,7 +355,7 @@ public abstract class GameMap {
 							if (currentCheck != null)
 								currentCheck.setCheck(false);
 
-							checkPoint();
+							checkPoint();// FIXME Swap this and the bottom line to remove the self-resetting checkpoint bug (I just left it for fun, for the 'speedrunners' or sth)
 							((Checkpoint) entity).setCheck(true);
 							currentCheck = (Checkpoint) entity;
 						}
