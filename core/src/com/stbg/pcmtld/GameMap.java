@@ -1,17 +1,25 @@
 package com.stbg.pcmtld;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameMap {
 
+	protected class DoorPair{
+		public Vector2 firstDoor;
+		public Vector2 secondDoor;
+		
+		public DoorPair(Vector2 firstDoor, Vector2 secondDoor) {
+			this.firstDoor = firstDoor;
+			this.secondDoor = secondDoor;
+		}
+	}
+	
 	protected ArrayList<Entity> entities;
 	protected ArrayList<Bullet> bullets;
-	protected HashMap<Vector2, Vector2> doors;
+	protected ArrayList<DoorPair> doors;
 	protected ArrayList<EntitySnapshot> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
@@ -60,7 +68,7 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>(100);
 		bullets = new ArrayList<Bullet>(100);
-		doors = new HashMap<Vector2, Vector2>();
+		doors = new ArrayList<DoorPair>();
 		checkP = new ArrayList<EntitySnapshot>();
 		
 		playerHealth = (int) EntityType.PLAYER.getHealth();
@@ -300,9 +308,9 @@ public abstract class GameMap {
 	}
 	
 	public Vector2 getCorrespondingDoor(float x, float y, int width, int height) {
-		for(Entry<Vector2, Vector2> doorPair : doors.entrySet()) {
-			Vector2 firstDoor = doorPair.getKey();
-			Vector2 secondDoor = doorPair.getValue();
+		for(DoorPair doorPair : doors) {
+			Vector2 firstDoor = doorPair.firstDoor;
+			Vector2 secondDoor = doorPair.secondDoor;
 			if(firstDoor.x < x + width && firstDoor.x + TileType.TILE_SIZE > x && firstDoor.y < y + height && firstDoor.y + TileType.TILE_SIZE > y)
 				return secondDoor;
 			

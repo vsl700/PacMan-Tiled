@@ -49,7 +49,9 @@ public class TiledGameMap extends GameMap {
 						}
 						else {
 							Vector2 secondDoor = new Vector2(col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
-							doors.put(firstDoor, secondDoor);
+							/*if(doors.containsKey(firstDoor))
+								doors.put(secondDoor, firstDoor);
+							else*/ doors.add(new DoorPair(firstDoor, secondDoor));
 							
 							flag = true;
 							break;
