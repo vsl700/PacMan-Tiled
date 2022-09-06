@@ -77,14 +77,14 @@ public abstract class Entity {
 		}
 
 		if (moveLeft) {
-			if (isToLadder() && !(map.doesRectCollideWithTile(getX() + getWidth() - 2, getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() - 2, getY(), getWidth(), getHeight(), TileType.LADDER))) 
+			if (isToLadder() && !canBeLaddered()) 
 				// movingLeft = true;
 				ladder = true;
 
 			right = false;
 			moveX(-SPEED * deltaTime);
 		} else if (moveRight) {
-			if (isToLadder() && !(map.doesRectCollideWithTile(getX() + 1, getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth() + 1, getY(), getWidth(), getHeight(), TileType.LADDER)))
+			if (isToLadder() && !canBeLaddered())
 				// movingRight = true;
 				ladder = true;
 			
@@ -262,7 +262,9 @@ public abstract class Entity {
 	}
 
 	public boolean canBeLaddered() {
-		return (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER));
+		return (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || 
+				map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) ||
+				map.doesRectCollideWithTile(getX(), getY() + getHeight() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() + getHeight() - 1, getWidth(), getHeight(), TileType.LADDER));
 	}
 
 	public boolean isRight() {

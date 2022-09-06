@@ -212,8 +212,14 @@ public class Player extends Entity {
 			this.velocityY += JUMP_VELOCITY * getWeight() * deltaTime;
 		else if(isToLadder() && canBeLaddered()){
 			float ladderVelocity = JUMP_VELOCITY * getWeight();
-			if((Gdx.input.isKeyPressed(Keys.UP) || up) && (map.doesRectCollideWithTile(getX(), getY() + ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() + ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER))) this.velocityY = ladderVelocity;
-			else if((Gdx.input.isKeyPressed(Keys.DOWN) || down) && (map.doesRectCollideWithTile(getX(), getY() - ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER))) this.velocityY = -ladderVelocity;
+			if((Gdx.input.isKeyPressed(Keys.UP) || up) && (map.doesRectCollideWithTile(getX(), getY() + ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER) || 
+					map.doesRectCollideWithTile(getX() + getWidth(), getY() + ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER) || 
+					map.doesRectCollideWithTile(getX(), getY() + getHeight(), getWidth(), getHeight(), TileType.LADDER) || 
+					map.doesRectCollideWithTile(getX() + getWidth(), getY() + getHeight(), getWidth(), getHeight(), TileType.LADDER))) 
+				this.velocityY = ladderVelocity;
+			else if((Gdx.input.isKeyPressed(Keys.DOWN) || down) && (map.doesRectCollideWithTile(getX(), getY() - ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER) || 
+					map.doesRectCollideWithTile(getX() + getWidth(), getY() - ladderVelocity * deltaTime, getWidth(), getHeight(), TileType.LADDER))) 
+				this.velocityY = -ladderVelocity;
 			else this.velocityY = 0;
 		}
 		
