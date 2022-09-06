@@ -122,6 +122,14 @@ public class RedEnemy extends Entity {
 		walkSheet2.dispose();
 	}
 
+	@Override
+	public void setDead(boolean dead) {
+		super.setDead(dead);
+		
+		if(dead)
+			Player.setScore(Player.getScore() + 20);
+	}
+
 	public static void setValue(String value) {
 		RedEnemy.value = value;
 	}

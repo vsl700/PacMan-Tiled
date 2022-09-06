@@ -172,6 +172,16 @@ public abstract class GameMap {
 		if(playerIndex >= 0) {
 			camera.position.x = entities.get(playerIndex).pos.x + xCamOffset;
 			camera.position.y = entities.get(playerIndex).pos.y + yCamOffset;
+			
+			float xMin = 320;
+			float yMin = 320;
+			if(camera.position.x <= xMin)
+				camera.position.x = xMin;
+			else if(camera.position.x >= getWidth() * 32 - xMin)
+				camera.position.x = getWidth() * 32 - xMin;
+			
+			if(camera.position.y >= getHeight() * 32 - yMin)
+				camera.position.y = getHeight() * 32 - yMin;
 		}
 		else {
 			if(camRight && camera.position.x >= (getWidth() - 10) * TileType.TILE_SIZE) {

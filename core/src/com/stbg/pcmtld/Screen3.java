@@ -173,7 +173,7 @@ public class Screen3 implements Screen {
 		else {*/
 			lvl = Screen2.toplay;
 			gameMap = new TiledGameMap(SettingReader.stage, lvl);
-			gameMap.xCamOffset = 200;
+			gameMap.xCamOffset = 24;
 			gameMap.yCamOffset = -0;
 
 			// cam.setToOrtho(false, 860, 480);
