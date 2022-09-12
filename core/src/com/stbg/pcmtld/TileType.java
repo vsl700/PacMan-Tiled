@@ -27,7 +27,17 @@ public enum TileType {
 	HEARTSCORE(false, "heart"),
 	STRAWBERRYSCORE(false, "berry"),
 	CHERRYSCORE(false, "cherry"),
-	DOOR(false, "door");
+	DOOR(false, "door"),
+	CUSTOMBLOCK1(true, "cblock1"),
+	CUSTOMBLOCK2(true, "cblock2"),
+	CUSTOMBLOCK3(true, "cblock3"),
+	CUSTOMBLOCK4(true, "cblock4"),
+	CUSTOMBLOCK5(true, "cblock5"),
+	CUSTOMAIR1(false, "cair1"),
+	CUSTOMAIR2(false, "cair2"),
+	CUSTOMAIR3(false, "cair3"),
+	CUSTOMAIR4(false, "cair4"),
+	CUSTOMAIR5(false, "cair5");
 	//SCORETILE(16, false, "score"),
 	
 	
