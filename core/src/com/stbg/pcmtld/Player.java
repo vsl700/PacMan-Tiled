@@ -380,10 +380,15 @@ public class Player extends Entity {
 		if(startTime > 0)
 			return;
 		
+		if(score < 10)
+			return;
+		
 		if(right)
-			map.shootBullet(getX() + getWidth() - 7, getY() + getHeight() / 2 - 5, 1, 0, this);
+			map.shootBullet(getX() + getWidth() / 2, getY() + getHeight() / 2 - 5, 1, 0, this);
 		else
-			map.shootBullet(getX(), getY() + getHeight() / 2 - 5, -1, 0, this);
+			map.shootBullet(getX() + getWidth() / 2, getY() + getHeight() / 2 - 5, -1, 0, this);
+		
+		score-=10;
 	}
 	
 	public void applyEffect(Effect effect) {
