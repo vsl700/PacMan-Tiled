@@ -1,15 +1,26 @@
 package com.stbg.pcmtld;
 
 import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameMap {
 
+	protected class DoorPair{
+		public Vector2 firstDoor;
+		public Vector2 secondDoor;
+		
+		public DoorPair(Vector2 firstDoor, Vector2 secondDoor) {
+			this.firstDoor = firstDoor;
+			this.secondDoor = secondDoor;
+		}
+	}
+	
 	protected ArrayList<Entity> entities;
 	protected ArrayList<Bullet> bullets;
-	ArrayList<Entity> checkP;
+	protected ArrayList<DoorPair> doors;
+	protected ArrayList<EntitySnapshot> checkP;
 	public int xCamOffset;
 	public int yCamOffset;
 	private boolean camRight;
@@ -57,13 +68,15 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>(100);
 		bullets = new ArrayList<Bullet>(100);
+		doors = new ArrayList<DoorPair>();
+		checkP = new ArrayList<EntitySnapshot>();
+		
 		playerHealth = (int) EntityType.PLAYER.getHealth();
 		playerToLadder = false;
 		// if(!SettingReader.noLevels)
 		// entities.addAll(EntityLoader.loadEntitiesFromMap("" + Screen3.lvl,
 		// this, entities));
 		checkPLoad = false;
-		uncheck();
 		// System.out.println(String.valueOf(entities.get(3)));
 		// System.out.println(entities.size() - 1);
 		// entity = new Entity();
@@ -74,21 +87,24 @@ public abstract class GameMap {
 		camRight = true;
 		camUp = true;
 	}
+	
+	protected abstract void loadDoors();
 
-	@SuppressWarnings("unchecked")
 	private void checkPoint() {
-		checkP = (ArrayList<Entity>) entities.clone();
+		checkP.clear();
+		for(Entity e : entities) {
+			EntitySnapshot snapshot = e.getSaveSnapshot();
+			checkP.add(snapshot);
+		}
 
 		Screen3.setCheck();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void loadCheck() {
-		entities = (ArrayList<Entity>) checkP.clone();
-	}
-
-	public void uncheck() {
-		checkP = null;
+		entities.clear();
+		for(EntitySnapshot snapshot : checkP) {
+			entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+		}
 	}
 
 	public void update(float delta) {
@@ -106,7 +122,7 @@ public abstract class GameMap {
 					// Player.setPlayerDead(true);
 				}
 
-				if (entities.get(i).getClass() == Player.class) {
+				if (entities.get(i).getType().equals(EntityType.PLAYER)) {
 					playerHealth = entities.get(i).getHealth();
 					playerGrounded = entities.get(i).isGrounded();
 					playerToLadder = entities.get(i).isToLadder();
@@ -122,12 +138,17 @@ public abstract class GameMap {
 					entities.get(i).setLadder(ladder);
 				}
 
-				if (entities.get(i).isDead() && entities.get(i).getClass() != Player.class) {
+				if (entities.get(i).isDead() && !entities.get(i).getType().equals(EntityType.PLAYER)) {
 					entities.get(i).dispose();
 					entities.remove(i);
+					
+					getPlayerIndex();
 					// System.out.println("An entity just died.");
-				} else if (entities.get(i).isDead() && entities.get(i).getClass() == Player.class)
-					setDead(true);
+				} else if (entities.get(i).isDead() && entities.get(i).getType().equals(EntityType.PLAYER))
+					if(isCheckpointed()) {
+						loadCheck();
+						return;
+					}else setDead(true);
 
 			}
 
@@ -151,6 +172,16 @@ public abstract class GameMap {
 		if(playerIndex >= 0) {
 			camera.position.x = entities.get(playerIndex).pos.x + xCamOffset;
 			camera.position.y = entities.get(playerIndex).pos.y + yCamOffset;
+			
+			float xMin = 320;
+			float yMin = 320;
+			if(camera.position.x <= xMin)
+				camera.position.x = xMin;
+			else if(camera.position.x >= getWidth() * 32 - xMin)
+				camera.position.x = getWidth() * 32 - xMin;
+			
+			if(camera.position.y >= getHeight() * 32 - yMin)
+				camera.position.y = getHeight() * 32 - yMin;
 		}
 		else {
 			if(camRight && camera.position.x >= (getWidth() - 10) * TileType.TILE_SIZE) {
@@ -174,6 +205,8 @@ public abstract class GameMap {
 			camera.translate((camRight ? speed : -speed) * delta, (camUp ? speed : -speed) * delta2);
 		}
 
+		camera.update();
+		
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
 
@@ -237,12 +270,28 @@ public abstract class GameMap {
 
 	public boolean doesRectCollideWithMap(float x, float y, int width, int height, Entity entity) {
 		for (Entity entity2 : entities) {
-			if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX() && y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
-				if (entity.getType().equals(EntityType.PLAYER) && entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
-					entity2.setTouched(true);
-					//System.out.println(entity.isTouched());
+			if (x < entity2.getX() + entity2.getWidth() && x + width > entity2.getX()
+					&& y < entity2.getY() + entity2.getHeight() && y + height > entity2.getY() && !entity2.isDead()) {
+				if (entity2.getType().equals(EntityType.DESTROYABLEBLOCK) && !entity.isToLadder()) {
+					if (entity.getType().equals(EntityType.PLAYER)
+							&& entity2.getY() + entity2.getHeight() <= entity.getY() && !entity2.isDead()) {
+						entity2.setTouched(true);
+						// System.out.println(entity.isTouched());
+					}
+					return true;
+				}else if (entity2.getType().equals(EntityType.REDDORR)) {
+					if(!getPlayerInstance().rkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
+				} else if (entity2.getType().equals(EntityType.GREENDOOR)) {
+					if(!getPlayerInstance().gkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
+				} else if (entity2.getType().equals(EntityType.BLUEDOOR)) {
+					if(!getPlayerInstance().bkey || !entity.getType().equals(EntityType.PLAYER)) {
+						return true;
+					}
 				}
-				return true;
 			}
 		}
 
@@ -253,10 +302,10 @@ public abstract class GameMap {
 					if (type != null) {
 						if (type.isCollidable() && !entity.isToLadder()) {
 							if (entity.getClass() == Player.class) {
-								if (type.getId() == 3) {
+								if (type.getId() == TileType.FINISH.getId()) {
 									finish = true;
-								} else if (type.getId() == 18)
-									checkPoint();
+								} /*else if (type.getId() == TileType.CHECKPOINT.getId())
+									checkPoint();*/
 							}
 
 							return true;
@@ -266,6 +315,20 @@ public abstract class GameMap {
 			}
 		}
 		return false;
+	}
+	
+	public Vector2 getCorrespondingDoor(float x, float y, int width, int height) {
+		for(DoorPair doorPair : doors) {
+			Vector2 firstDoor = doorPair.firstDoor;
+			Vector2 secondDoor = doorPair.secondDoor;
+			if(firstDoor.x < x + width && firstDoor.x + TileType.TILE_SIZE > x && firstDoor.y < y + height && firstDoor.y + TileType.TILE_SIZE > y)
+				return secondDoor;
+			
+			if(secondDoor.x < x + width && secondDoor.x + TileType.TILE_SIZE > x && secondDoor.y < y + height && secondDoor.y + TileType.TILE_SIZE > y)
+				return firstDoor;
+		}
+		
+		return null;
 	}
 
 	public boolean doesRectCollideWithTile(float x, float y, float width, float height, TileType type) {
@@ -285,6 +348,7 @@ public abstract class GameMap {
 		return false;
 	}
 
+	private Checkpoint currentCheck;
 	public boolean doesEntityCollideWithEntity(float x1, float y1, int width1, int height1, float startTime) {
 
 		// boolean ladderRetrigger = true;
@@ -292,7 +356,7 @@ public abstract class GameMap {
 		for (Entity entity : entities) {
 			// Return true if you want to hurt the player for some reason!
 			if (entity != null && entity.getClass() != Player.class) {
-				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 - (entity.getClass() == DestroyableBlock.class ? 3 : 0) && startTime <= 0) {
+				if (entity.getX() < x1 + width1 && entity.getX() + entity.getWidth() > x1 && entity.getY() < y1 + height1 && entity.getY() + entity.getHeight() > y1 - (entity.getClass() == DestroyableBlock.class ? 3 : 0) && (startTime <= 0 || entity.getType().equals(EntityType.CHECKPOINT))) {
 					if (entity.getClass() == DestroyableBlock.class && entity.getY() < y1) {
 						if (!entity.isDead()) {
 							entity.setTouched(true);
@@ -305,7 +369,35 @@ public abstract class GameMap {
 							((Score) entity).onCollected(/* entities.get(getPlayerIndex()) */);
 						}
 					} else if (entity.getClass() == Checkpoint.class) {
-						checkPoint();
+						if (!((Checkpoint) entity).isCheck()) {
+							if (currentCheck != null)
+								currentCheck.setCheck(false);
+
+							checkPoint();// FIXME Swap this and the bottom line to remove the self-resetting checkpoint bug (I just left it for fun, for the 'speedrunners' or sth)
+							((Checkpoint) entity).setCheck(true);
+							currentCheck = (Checkpoint) entity;
+						}
+					} else if (entity.getClass() == RedKey.class) {
+						getPlayerInstance().rkey = true;
+						entity.die();
+					} else if (entity.getClass() == GreenKey.class) {
+						getPlayerInstance().gkey = true;
+						entity.die();
+					} else if (entity.getClass() == BlueKey.class) {
+						getPlayerInstance().bkey = true;
+						entity.die();
+					} else if (entity.getClass() == RedDoor.class) {
+						if(getPlayerInstance().rkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == GreenDoor.class) {
+						if(getPlayerInstance().gkey) {
+							entity.die();
+						}
+					} else if (entity.getClass() == BlueDoor.class) {
+						if(getPlayerInstance().bkey) {
+							entity.die();
+						}
 					} else
 						return true;
 				}
@@ -362,10 +454,14 @@ public abstract class GameMap {
 	public int getPlayerIndex() {
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities.get(i).getClass() == Player.class)
-				return i;
+				return playerIndex = i;
 		}
 
 		return -1;
+	}
+	
+	public boolean isCheckpointed() {
+		return checkP.size() > 0;
 	}
 
 	public boolean isFinish() {

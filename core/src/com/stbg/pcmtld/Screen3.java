@@ -71,7 +71,7 @@ public class Screen3 implements Screen {
 	public Screen3(MyGdxGame mg) {
 		game = mg;
 
-		gameMap = new TiledGameMap(lvl);
+		//gameMap = new TiledGameMap(lvl);
 		// firstCreated = true;
 
 		cam = new OrthographicCamera();
@@ -102,7 +102,7 @@ public class Screen3 implements Screen {
 
 		contBtn = new Button("Continue", font2, batch, shapes, cam, true, 0, Keys.ESCAPE);
 		contBtn.setMarkColor(Color.DARK_GRAY);
-		retryBtn = new Button("Retry", font2, batch, shapes, cam, true, 0, Keys.R);
+		retryBtn = new Button("Restart Level", font2, batch, shapes, cam, true, 0, Keys.R);
 		retryBtn.setMarkColor(Color.DARK_GRAY);
 		
 		quitBtn1 = new Button("Quit", font2, batch, shapes, cam, true, 0, Keys.Q);
@@ -169,16 +169,17 @@ public class Screen3 implements Screen {
 	@Override
 	public void show() {
 
-		if(cont) gameMap.loadCheck();
-		else {
+		/*if(cont) gameMap.loadCheck();
+		else {*/
 			lvl = Screen2.toplay;
-			gameMap = new TiledGameMap(lvl);
-			set = new SettingReader();
+			gameMap = new TiledGameMap(SettingReader.stage, lvl);
+			gameMap.xCamOffset = 24;
+			gameMap.yCamOffset = -0;
 
 			// cam.setToOrtho(false, 860, 480);
 
 			// cam2.setToOrtho(false, 860, 480);
-		}
+		//}
 
 		paused = false;
 		gameMap.setDead(false);
@@ -206,7 +207,7 @@ public class Screen3 implements Screen {
 		// System.out.println(player.playerX);
 		shapes.begin(ShapeRenderer.ShapeType.Filled);
 		shapes.setProjectionMatrix(cam.combined);
-		shapes.rect(0, 0, cam.viewportWidth, cam.viewportHeight, Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE);
+		shapes.rect(0, 0, cam.viewportWidth, cam.viewportHeight, SettingReader.stage.getDownColor(), SettingReader.stage.getDownColor(), SettingReader.stage.getUpColor(), SettingReader.stage.getUpColor());
 		shapes.end();
 
 		if (!paused)
@@ -389,7 +390,8 @@ public class Screen3 implements Screen {
 		}*/
 
 		if (gameMap.isFinish()) {
-			set.writer("setting", lvl + 1, SettingReader.score + (int) (Player.score + Player.getTime()) * (int) (GameMap.playerHealth));
+			set = new SettingReader();
+			set.writer(SettingReader.stage.getDir(), lvl + 1, SettingReader.score + (int) (Player.score + Player.getTime()) * (int) (GameMap.playerHealth));
 			Screen2.setToplay(lvl + 1);
 			game.setScreen(game.finish);
 		}
@@ -413,8 +415,13 @@ public class Screen3 implements Screen {
 			if (Gdx.input.isKeyJustPressed(Keys.R)) {
 				// game.setScreen(game.scn3);
 				//crnt = false;
-				cont = false;
-				show();
+				if(gameMap.isCheckpointed()) {
+					gameMap.loadCheck();
+				}else {
+					cont = false;
+					gameMap.dispose();
+					show();
+				}
 				// gameMap = new TiledGameMap(lvl);
 			}
 			/*
@@ -450,16 +457,19 @@ public class Screen3 implements Screen {
 	public void resize(int width, int height) {
 		cam.setToOrtho(false, width, height);
 
-		font.getData().setScale(width / 430 - 1);
+		font.getData().setScale(Math.max(width / 430 - 1, 1));
 		font2.getData().setScale(width / 430);
 		// font2.getData().setScale(width / 430 - 1);
 		
 		contBtn.setLocation(game.calculateX((1280 - 13*font.getSpaceWidth() - 885) / 2), game.calculateY(465));
-		retryBtn.setLocation(game.calculateX(1280 - 8*font.getSpaceWidth() - 656), game.calculateY(465));
+		retryBtn.setLocation(game.calculateX(515), game.calculateY(465));
 		quitBtn1.setLocation(game.calculateX(1280 - 7*font.getSpaceWidth() - 305), game.calculateY(465));
 
 		// Vector3 temp = cam2.position.cpy();
 		cam2.setToOrtho(false, width, height);
+		if(width >= 1000 && height >= 640)
+			cam2.zoom = 0.5f;
+		else cam2.zoom = 0.75f;
 		// cam2.position.x = temp.x;
 		// cam2.position.y = temp.y;
 		// cam2.position.z = temp.z;

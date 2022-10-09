@@ -24,6 +24,7 @@ public abstract class Entity {
 	protected boolean up = false;
 	protected boolean down = false;
 	protected boolean ladder = false;
+	protected boolean door = false;
 	protected int health;
 
 	// private boolean dead;
@@ -39,17 +40,19 @@ public abstract class Entity {
 		this.pos = new Vector2(snapshot.getX(), snapshot.getY());
 		this.type = type;
 		this.map = map;
+		
+		velocityY = snapshot.getFloat("velocityY", 0);
 
-		health = (int) getType().getHealth();
+		health = snapshot.getInt("health", (int) getType().getHealth());
 
 		// dead = false;
 
 		hurt = false;
 
-		right = true;
-		touched = false;
+		right = snapshot.getBoolean("right", true);
+		touched = snapshot.getBoolean("touched", false);
 		dead = false;
-		toLadder = false;
+		toLadder = snapshot.getBoolean("toLadder", false);
 
 		
 
@@ -74,14 +77,14 @@ public abstract class Entity {
 		}
 
 		if (moveLeft) {
-			if (isToLadder() && !(map.doesRectCollideWithTile(getX() + getWidth() - 2, getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() - 2, getY(), getWidth(), getHeight(), TileType.LADDER))) 
+			if (isToLadder() && !canBeLaddered()) 
 				// movingLeft = true;
 				ladder = true;
 
 			right = false;
 			moveX(-SPEED * deltaTime);
 		} else if (moveRight) {
-			if (isToLadder() && !(map.doesRectCollideWithTile(getX() + 1, getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth() + 1, getY(), getWidth(), getHeight(), TileType.LADDER)))
+			if (isToLadder() && !canBeLaddered())
 				// movingRight = true;
 				ladder = true;
 			
@@ -115,7 +118,14 @@ public abstract class Entity {
 			}
 		}
 		
-		if (!type.isCollectable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
+		if(door) {
+			Vector2 temp = map.getCorrespondingDoor(getX(), getY(), getWidth(), getHeight());
+			
+			if(temp != null)
+				pos.set(temp);
+		}
+		
+		if (!type.isCollectable() && type.isKillable() && !type.equals(EntityType.DESTROYABLEBLOCK) && map.doesEntityCollideWithBullet(this)) {
 			setHealth(getHealth() - 1);
 			//setStartTime(1.15f);
 		}
@@ -143,7 +153,7 @@ public abstract class Entity {
 
 	protected void moveX(float amount) {
 		float newX = pos.x + amount;
-		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight(), this) && (getClass() == Player.class || map.doesRectCollideWithAnyTile(newX, pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE) && map.doesRectCollideWithAnyTile(newX + getWidth(), pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE)))
+		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight(), this) && (getClass() == Player.class || map.doesRectCollideWithAnyTile(newX, pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE, TileType.CUSTOMBLOCK1, TileType.CUSTOMBLOCK2, TileType.CUSTOMBLOCK3, TileType.CUSTOMBLOCK4, TileType.CUSTOMBLOCK5) && map.doesRectCollideWithAnyTile(newX + getWidth(), pos.y - 1, getWidth(), getHeight(), TileType.BLOCK, TileType.DESTBLOCKTILE, TileType.CUSTOMBLOCK1, TileType.CUSTOMBLOCK2, TileType.CUSTOMBLOCK3, TileType.CUSTOMBLOCK4, TileType.CUSTOMBLOCK5)))
 			pos.x = newX;
 		else {
 			if (getClass() != Player.class)
@@ -153,7 +163,18 @@ public abstract class Entity {
 	}
 
 	public EntitySnapshot getSaveSnapshot() {
-		return new EntitySnapshot(type.getId(), pos.x, pos.y);
+		EntitySnapshot snapshot = new EntitySnapshot(type.getId(), pos.x, pos.y);
+		saveEntityData(snapshot);
+		return snapshot;
+	}
+	
+	protected void saveEntityData(EntitySnapshot snapshot) {
+		snapshot.putInt("health", health);
+		snapshot.putFloat("velocityY", velocityY);
+		snapshot.putBoolean("right", right);
+		snapshot.putBoolean("touched", touched);
+		snapshot.putFloat("startTime", startTime);
+		snapshot.putBoolean("toLadder", toLadder);
 	}
 
 	public Vector2 getPos() {
@@ -241,7 +262,9 @@ public abstract class Entity {
 	}
 
 	public boolean canBeLaddered() {
-		return (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER));
+		return (map.doesRectCollideWithTile(getX(), getY(), getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY(), getWidth(), getHeight(), TileType.LADDER) || 
+				map.doesRectCollideWithTile(getX(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() - 1, getWidth(), getHeight(), TileType.LADDER) ||
+				map.doesRectCollideWithTile(getX(), getY() + getHeight() - 1, getWidth(), getHeight(), TileType.LADDER) || map.doesRectCollideWithTile(getX() + getWidth(), getY() + getHeight() - 1, getWidth(), getHeight(), TileType.LADDER));
 	}
 
 	public boolean isRight() {

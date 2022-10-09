@@ -15,7 +15,13 @@ public enum EntityType {
 	PINKENENMY("pink", PinkMonster.class, 32, 32, 40, 4, false),
 	REDENEMY("red", RedEnemy.class, 32, 32, 40, 2, false),
 	DESTROYABLEBLOCK("destblock", DestroyableBlock.class, 32, 32, 0, 1, false),
-	CHECKPOINT("check", Checkpoint.class, 32, 32, 0, 1, false),
+	CHECKPOINT("check", Checkpoint.class, 32, 32, 0, 1, false, false),
+	REDKEY("rkey", RedKey.class, 32, 32, 0, 1, false, false),
+	GREENKEY("gkey", GreenKey.class, 32, 32, 0, 1, false, false),
+	BLUEKEY("bkey", BlueKey.class, 32, 32, 0, 1, false, false),
+	REDDORR("rdoor", RedDoor.class, 32, 32, 0, 1, false, false),
+	GREENDOOR("gdoor", GreenDoor.class, 32, 32, 0, 1, false, false),
+	BLUEDOOR("bdoor", BlueDoor.class, 32, 32, 0, 1, false, false),
 	SCORE("score", Score.class, 9, 8, 0, 1, true),
 	BIGSCORE("bigscore", BigScore.class, 18, 16, 0, 1, true),
 	BANANASCORE("banana", BananaScore.class, 32, 32, 0, 1, true),
@@ -29,8 +35,13 @@ public enum EntityType {
 	private float weight;
 	private double health;
 	private boolean collectable;
+	private boolean killable;
 	
-	private EntityType(String id, Class loaderClass, int width, int height, float weight, double health, boolean collectable){
+	private EntityType(String id, Class loaderClass, int width, int height, float weight, double health, boolean collectable) {
+		this(id, loaderClass, width, height, weight, health, collectable, true);
+	}
+	
+	private EntityType(String id, Class loaderClass, int width, int height, float weight, double health, boolean collectable, boolean killable){
 		this.id = id;
 		this.loaderClass = loaderClass;
 		this.width = width;
@@ -38,6 +49,7 @@ public enum EntityType {
 		this.weight = weight;
 		this.health = health;
 		this.collectable = collectable;
+		this.killable = killable;
 	}
 
 	public String getId() {
@@ -58,6 +70,10 @@ public enum EntityType {
 	
 	public boolean isCollectable() {
 		return collectable;
+	}
+	
+	public boolean isKillable() {
+		return killable;
 	}
 	
 	public static Entity createEntityUsingSnapshot(EntitySnapshot entitySnapshot, GameMap map){

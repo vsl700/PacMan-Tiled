@@ -4,29 +4,40 @@ import java.util.HashMap;
 
 public enum TileType {
 
-	BLOCK(1, true, "Block"),
-	AIR(2, false, "Air"),
-	FINISH(3, true, "Finish"),
-	SCORE(4, false, "Score", 5),
-	REDKEY(5, false, "RKey"),
-	REDDOOR(6, false, "RDoor"),
-	GREENKEY(7, false, "GKey"),
-	GREENDOOR(8, false, "GDoor"),
-	BLUEKEY(9, false, "BKey"),
-	BLUEDOOR(10, false, "BDoor"),
-	DESTBLOCKTILE(11, false, "destblock"),
-	REDSTILE(12, false, "red"),
-	ORANGESTILE(13, false, "yellow"),
-	CYANSTILE(14, false, "cyan"),
-	PINKSTILE(15, false, "pink"),
-	PLAYERSTILE(16, false, "player"),
-	LADDER(17, false, "ladder"),
-	CHECKPOINT(18, false, "check"),
-	BIGSCORE(19, false, "bigscore"),
-	BANANASCORE(20, false, "banana"),
-	HEARTSCORE(21, false, "heart"),
-	STRAWBERRYSCORE(22, false, "berry"),
-	CHERRYSCORE(23, false, "cherry");
+	BLOCK(true, "Block"),
+	AIR(false, "Air"),
+	FINISH(true, "Finish"),
+	SCORE(false, "Score", 5),
+	REDKEY(false, "RKey"),
+	REDDOOR(false, "RDoor"),
+	GREENKEY(false, "GKey"),
+	GREENDOOR(false, "GDoor"),
+	BLUEKEY(false, "BKey"),
+	BLUEDOOR(false, "BDoor"),
+	DESTBLOCKTILE(false, "destblock"),
+	REDSTILE(false, "red"),
+	ORANGESTILE(false, "yellow"),
+	CYANSTILE(false, "cyan"),
+	PINKSTILE(false, "pink"),
+	PLAYERSTILE(false, "player"),
+	LADDER(false, "ladder"),
+	CHECKPOINT(false, "check"),
+	BIGSCORE(false, "bigscore"),
+	BANANASCORE(false, "banana"),
+	HEARTSCORE(false, "heart"),
+	STRAWBERRYSCORE(false, "berry"),
+	CHERRYSCORE(false, "cherry"),
+	DOOR(false, "door"),
+	CUSTOMBLOCK1(true, "cblock1"),
+	CUSTOMBLOCK2(true, "cblock2"),
+	CUSTOMBLOCK3(true, "cblock3"),
+	CUSTOMBLOCK4(true, "cblock4"),
+	CUSTOMBLOCK5(true, "cblock5"),
+	CUSTOMAIR1(false, "cair1"),
+	CUSTOMAIR2(false, "cair2"),
+	CUSTOMAIR3(false, "cair3"),
+	CUSTOMAIR4(false, "cair4"),
+	CUSTOMAIR5(false, "cair5");
 	//SCORETILE(16, false, "score"),
 	
 	
@@ -37,12 +48,16 @@ public enum TileType {
 	
 	public static final int TILE_SIZE = 32;
 	
-	private TileType(int id, boolean collidable, String name){
-		this(id, collidable, name, 0);
+	private static class Incrementor{ // Had to use a whole new class because you can't use an enum's static variables when creating the enum's constants
+		public static int i = 1;
 	}
 	
-	private TileType(int id, boolean collidable, String name, float damage){
-		this.id = id;
+	private TileType(boolean collidable, String name){
+		this(collidable, name, 0);
+	}
+	
+	private TileType(boolean collidable, String name, float damage){
+		this.id = Incrementor.i++;
 		this.collidable = collidable;
 		this.name = name;
 		this.damage = damage;

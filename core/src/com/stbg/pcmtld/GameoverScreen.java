@@ -136,7 +136,6 @@ public class GameoverScreen implements Screen {
 			game.setScreen(game.scn1);
 			// }
 		}else if (resetLev.justTouched()) {
-			game.scn3.gameMap.uncheck();
 			Screen3.cont = false;
 			game.setScreen(game.scn3);
 		}

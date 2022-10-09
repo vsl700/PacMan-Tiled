@@ -33,7 +33,9 @@ public class Screen2 implements Screen {
 	// Rectangle contGame;
 	// Rectangle goBack;
 
+	LevelGroups currentStage;
 	Button newGame, contGame, goBack;
+	Button nextGroup, prevGroup;
 
 	int r = 200;
 
@@ -65,7 +67,7 @@ public class Screen2 implements Screen {
 		cam.update();
 
 		sr = new SettingReader();
-		levels = sr.getLevelsAmount();
+		levels = sr.getLevelsAmount(SettingReader.stage);
 		toplay = sr.setting;
 		endless = SettingReader.endless;
 		completed = toplay - 1;
@@ -95,6 +97,9 @@ public class Screen2 implements Screen {
 		newGame = new Button("New Game", font, batch, shapes, cam, true, 0, Keys.NUM_1);
 		contGame = new Button("Continue", font, batch, shapes, cam, true, 0, Keys.NUM_2);
 		goBack = new Button("Go Back", font, batch, shapes, cam, true, 0, Keys.B);
+		
+		nextGroup = new Button("--next--", font, batch, shapes, cam, true, 0, Keys.NUM_3);
+		prevGroup = new Button("--prev--", font, batch, shapes, cam, true, 0, Keys.NUM_4);
 
 		// toplay = SettingReader.setting;
 	}
@@ -125,7 +130,7 @@ public class Screen2 implements Screen {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		batch.draw(texture, game.calculateX((1280 - texture.getWidth()) / 2), game.calculateY(600), game.calculateX(texture.getWidth()), game.calculateY(texture.getHeight()));
-		if (sr.noLevels)
+		if (sr.getLevelsAmount(currentStage) < 1)
 			// font.draw(batch, "New Game", (cam.viewportWidth -
 			// font.getSpaceWidth()) / 2 - 100, 500);
 			font.draw(batch, "Opps! We Forgot The Levels!", game.calculateX((1280 - font.getSpaceWidth()) / 2 - 100), game.calculateY(480));
@@ -146,7 +151,15 @@ public class Screen2 implements Screen {
 				// font2.draw(batch, "(Endless Level)", (1280 -
 				// font.getSpaceWidth()) / 2 + 125, 440);
 				// }
+			
+			
 		}
+		
+		if(currentStage.getNext() != null && sr.getLevel(currentStage.getNext()) > 0)
+			nextGroup.render();
+		
+		if(currentStage.getPrev() != null)
+			prevGroup.render();
 		// font.draw(batch, "Go Back", (cam.viewportWidth -
 		// font.getSpaceWidth()) / 2 - 100, 150);
 		goBack.render();
@@ -156,21 +169,31 @@ public class Screen2 implements Screen {
 
 		if (goBack.justTouched()) {
 			game.setScreen(game.scn1);
-		} else if (newGame.justTouched() && !sr.noLevels) {
-			sr.writer("setting", 1, 0);
+		} else if (newGame.justTouched()/* && !sr.noLevels */) {
+			SettingReader.stage = currentStage;
+			
+			sr.writer(currentStage.getDir(), 1, 0);
 			toplay = 1;
 			// System.out.println(toplay);
 			endless = false;
 			Screen1.endless = false;
 			game.setScreen(game.scn3);
-		} else if (contGame.justTouched() && !sr.noLevels) {
+		} else if (contGame.justTouched()/* && !sr.noLevels */) {
+			SettingReader.stage = currentStage;
 			if (toplay > 1 || sr.score > 0) {
 				Screen1.endless = false;
 				game.setScreen(game.scn3);
 			} // else if(toplay > 10 && toplay > 1){
 
 			// }
-		} else if (Gdx.input.isKeyJustPressed(Keys.T)) {
+		}else if(nextGroup.justTouched()) { 
+			currentStage = currentStage.getNext();
+			setLevelDataTexts();
+		}else if(prevGroup.justTouched()) { 
+			currentStage = currentStage.getPrev();
+			setLevelDataTexts();
+		}else if (Gdx.input.isKeyJustPressed(Keys.T)) {
+			SettingReader.stage = currentStage;
 			toplay = 0;
 			game.setScreen(game.scn3);
 		}
@@ -217,6 +240,9 @@ public class Screen2 implements Screen {
 
 		goBack.setLocation(game.calculateX((1280 - font.getSpaceWidth()) / 2 - 100), game.calculateY(130));
 		//goBack.resize();
+		
+		nextGroup.setLocation(newGame.x, game.calculateY(330));
+		prevGroup.setLocation(newGame.x, game.calculateY(270));
 
 		/*titleX = game.calculateX((1280 - texture.getWidth()) / 2);
 		titleY = game.calculateY(600);
@@ -234,7 +260,22 @@ public class Screen2 implements Screen {
 		// locked = levels - toplay;
 		// System.out.println(sr.getLevelsAmount());
 		// toplay = SettingReader.setting;
-		toplay = sr.getLevel();
+		currentStage = sr.getStage();
+		toplay = sr.getLevel(currentStage);
+		
+		setLevelDataTexts();
+	}
+	
+	private void setLevelDataTexts() {
+		if(currentStage.getNext() != null && sr.getLevel(currentStage.getNext()) > 0)
+			nextGroup.setText(currentStage.getNext().getName());
+		
+		if(currentStage.getPrev() != null)
+			prevGroup.setText(currentStage.getPrev().getName());
+		
+		levels = sr.getLevelsAmount(currentStage);
+		toplay = sr.getLevel(currentStage);
+		sr.getScore(currentStage);
 	}
 
 	@Override
@@ -247,7 +288,7 @@ public class Screen2 implements Screen {
 
 	@Override
 	public void resume() {
-		toplay = sr.getLevel();
+		toplay = sr.getLevel(sr.getStage());
 	}
 
 	@Override

@@ -1,33 +1,79 @@
 package com.stbg.pcmtld;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;;
 
 public class TiledGameMap extends GameMap {
+	
+	Texture background;
 	
 	TiledMap tiledMap;
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	public boolean ready = false;
 	
-	public TiledGameMap(int lvl) {
+	public TiledGameMap(LevelGroups stage, int lvl) {
 		// TODO Auto-generated constructor stub
+		if(Gdx.files.local("levels/" + stage.getDir() + "/res/" + "bg.png").exists())
+			background = new Texture(Gdx.files.local("levels/" + stage.getDir() + "/res/" + "bg.png"));
+		
 		ready = false;
-		tiledMap = new TmxMapLoader().load("levels/" + lvl + ".tmx");
+		tiledMap = new TmxMapLoader().load("levels/" + stage.getDir() + "/" + lvl + ".tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 		entities.addAll(EntityLoader.loadEntitiesFromMap(this));
 		entities.trimToSize();
+		loadDoors();
 		ready = true;
 		playerIndex = getPlayerIndex();
+	}
+	
+	@Override
+	protected void loadDoors() {
+		for(int layer = 0; layer < getLayers(); layer++) {
+			Vector2 firstDoor = null;
+			for(int row = 0; row < getHeight(); row++) {
+				boolean flag = false;
+				for(int col = 0; col < getWidth(); col++) {
+					TileType tile = getTileTypeByCoordinate(layer, col, row);
+					if(tile!= null && tile.equals(TileType.DOOR)) {
+						if(firstDoor == null) {
+							firstDoor = new Vector2(col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+						}
+						else {
+							Vector2 secondDoor = new Vector2(col * TileType.TILE_SIZE, row * TileType.TILE_SIZE);
+							/*if(doors.containsKey(firstDoor))
+								doors.put(secondDoor, firstDoor);
+							else*/ doors.add(new DoorPair(firstDoor, secondDoor));
+							
+							flag = true;
+							break;
+						}
+					}
+				}
+				
+				if(flag)
+					break;
+			}
+		}
 	}
 
 	@Override
 	public void render(OrthographicCamera camera, SpriteBatch batch){
+		if(background != null) {
+			//batch.setProjectionMatrix(camera.combined);
+			batch.begin();
+			batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
+			batch.end();
+		}
+		
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
 		

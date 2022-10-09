@@ -123,6 +123,30 @@ public class EntityLoader {
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 							//System.out.println("PLAYER");
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.REDKEY){
+							EntitySnapshot snapshot = new EntitySnapshot("rkey", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.GREENKEY){
+							EntitySnapshot snapshot = new EntitySnapshot("gkey", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.BLUEKEY){
+							EntitySnapshot snapshot = new EntitySnapshot("bkey", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.REDDOOR){
+							EntitySnapshot snapshot = new EntitySnapshot("rdoor", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.GREENDOOR){
+							EntitySnapshot snapshot = new EntitySnapshot("gdoor", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.BLUEDOOR){
+							EntitySnapshot snapshot = new EntitySnapshot("bdoor", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.SCORE){
 							EntitySnapshot snapshot = new EntitySnapshot("score", x * 32 + 11, y * 32 + 11);
 							//snapshots.add(snapshot);
@@ -149,6 +173,10 @@ public class EntityLoader {
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.DESTBLOCKTILE){
 							EntitySnapshot snapshot = new EntitySnapshot("destblock", x * 32, y * 32);
+							//snapshots.add(snapshot);
+							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
+						}else if(map.getTileTypeByCoordinate(layers, x, y) == TileType.CHECKPOINT){
+							EntitySnapshot snapshot = new EntitySnapshot("check", x * 32, y * 32);
 							//snapshots.add(snapshot);
 							entities.add(EntityType.createEntityUsingSnapshot(snapshot, map));
 						}
