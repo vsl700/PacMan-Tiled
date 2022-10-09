@@ -468,8 +468,8 @@ public class Screen3 implements Screen {
 		// Vector3 temp = cam2.position.cpy();
 		cam2.setToOrtho(false, width, height);
 		if(width >= 1000 && height >= 640)
-			cam2.zoom = 0.75f;
-		else cam2.zoom = 1f;
+			cam2.zoom = 0.5f;
+		else cam2.zoom = 0.75f;
 		// cam2.position.x = temp.x;
 		// cam2.position.y = temp.y;
 		// cam2.position.z = temp.z;
